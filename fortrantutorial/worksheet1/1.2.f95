@@ -1,4 +1,6 @@
 ! sum for two numbers
+! Yang Ma @ PITTPACC
+! 2/12/2019
 
 program sum                                          !a: name of program
 !an example of program  structure                    !b: a  comment   
