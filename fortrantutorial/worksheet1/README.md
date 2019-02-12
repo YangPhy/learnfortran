@@ -1,6 +1,6 @@
 ## Worksheet 1: The Basics
 
-### Aims
+- Aims
   By the end of this worksheet, you will be able to:
   - Create and run a Fortran 95 program
   - Understand basic program structure
