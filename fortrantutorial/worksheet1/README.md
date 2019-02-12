@@ -1,10 +1,10 @@
 ## Worksheet 1: The Basics
 
 ### Aims
-By the end of this worksheet, you will be able to:
-- Create and run a Fortran 95 program
-- Understand basic program structure
-- Unserstand real, integer and character variable types
+  By the end of this worksheet, you will be able to:
+  - Create and run a Fortran 95 program
+  - Understand basic program structure
+  - Unserstand real, integer and character variable types
 
 - [Hello world !](1.1.f95)
 - [Sum of two numbers](1.2.f95)
