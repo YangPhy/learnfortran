@@ -1,21 +1,18 @@
 ## Worksheet 2: Making Decisions
 
-## Aims
-By the end of this worksheet, you will be able to:
-- Do arithmetic
-- Start to use FORTRAN intrinsic functions
-- Begin to understand program flow and logic
-- Know how to test for zero – important!
-- Learn more about good programming style
+- Aims
+  By the end of this worksheet, you will be able to:
+  - Do arithmetic
+  - Start to use FORTRAN intrinsic functions
+  - Begin to understand program flow and logic
+  - Know how to test for zero – important!
+  - Learn more about good programming style
 
-### [Hello world !](1.1.f95)
-### [Sum of two numbers](1.2.f95)
-### [Input 3 numbers and output the sum](1.3.f95)
-### [More Data types – integer and character](1.4.f95)
-- Decare character variables
-
-When the character variable is declared, we show the maximum length that the string can occupy by following the name by a * then its maximum length. The example below has a maximum length of 10 characters allowed for a person's name – this might not always be enough! You have to make a judgement here.
-
-- implicit none
-
-By including it in your program, FORTRAN will check that you have properly declared all your variable types. In the bad old days of programming, declaration of variables was thought to be unnecessary and the old FORTRAN compilers used an implicit convention that integers have names starting with the letters in the range i – n, all the others being real. FORTRAN still allows you to do this if we don't include the line, implicit none. Time has shown that one of the commonest reasons for error in a program is the incorrect use of variables.
+- [Swap 2 input nubmers](2.1.f95)
+- [An example of arithmetic](2.2.f95)
+- [Making decisions using if](2.3.f95)
+- Write a program that reads a number from the keyboard. Get the program to decide whether, see [2.4](2.4.f95):
+  -the value of the number is greater than 0 but less than 1
+  -or is greater than 1 but less than 10
+  -or is outside of  both these ranges
+- [Test for zero](2.5.f95)
