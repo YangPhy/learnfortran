@@ -3,3 +3,4 @@
 ### [Worksheet 2: Making Decisions](worksheet2/README.md)
 ### [Worksheet 3: Loops](worksheet3/README.md)
 ### [Worksheet 4: Files and Precision](worksheet4/README.md)
+### [Worksheet 5: Arrays and Formatted I/O](worksheet5/README.md)
