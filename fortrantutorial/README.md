@@ -4,3 +4,4 @@
 ### [Worksheet 3: Loops](worksheet3/README.md)
 ### [Worksheet 4: Files and Precision](worksheet4/README.md)
 ### [Worksheet 5: Arrays and Formatted I/O](worksheet5/README.md)
+### [Worksheet 6: Subroutines and Functions](worksheet6/README.md)

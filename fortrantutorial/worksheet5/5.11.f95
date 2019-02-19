@@ -6,13 +6,16 @@ program identity
 implicit none
 integer,parameter :: rank=4
 integer :: row,col
-real :: a(rank, rank)
 
-do row=1,rank
-    do col=1,rank
-        a(row,col)=0
-    end do
-end do
+! real :: a(rank, rank)
+! do row=1,rank
+!     do col=1,rank
+!         a(row,col)=0
+!     end do
+! end do
+
+! do not have to use a loop to define the matrix
+real,dimension(rank,rank) :: a = 0
 
 do row=1,rank
     a(row,row)=1

@@ -7,11 +7,12 @@ implicit none
 integer :: row, col, i
 integer,dimension(4,4) :: mat
 
-do row =1,4
-    do col = 1,4
-        mat(row,col)=0
-    end do
-end do
+mat =0
+! do row =1,4
+!     do col = 1,4
+!         mat(row,col)=0
+!     end do
+! end do
 
 do i=1,4
     mat(i,i)=1
