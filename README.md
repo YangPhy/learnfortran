@@ -2,4 +2,3 @@
 
 ### [FortranTutorial](fortrantutorial/README.md) 
 
-$W^+W^-\to \mu^+\mu^-$
