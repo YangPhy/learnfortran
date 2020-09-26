@@ -1,0 +1,25 @@
+C  SAMPLE PROGRAM FOR QUANC8
+C  Calculate the integral 
+C  in Example 3.1 of Fundamental of Engineering Numerical Analysis, Moin.
+
+      EXTERNAL FUN
+      DOUBLE PRECISION A,B,ABSERR,RELERR,RESULT,ERREST,FLAG
+      INTEGER  NOFUN
+      A = 1.0
+      B = 3.1415926
+      RELERR = 1.0D-10
+      ABSERR = 0.0D0
+      CALL QUANC8(FUN,A,B,ABSERR,RELERR,RESULT,ERREST,NOFUN,FLAG)
+      WRITE(6,1) RESULT, ERREST
+      IF (FLAG .NE. 0.0) WRITE(1,2) FLAG
+    1 FORMAT(8H RESULT=, F15.10, 10H   ERREST=, E10.2)
+    2 FORMAT(44H WARNING..RESULT MAY BE UNRELIABLE.  FLAG = ,F6.2)
+      STOP
+      END
+
+
+      DOUBLE PRECISION FUNCTION FUN (X)
+      DOUBLE PRECISION X, DSIN
+         FUN = DSIN(X)/X**3/2.
+      RETURN
+      END

@@ -1,0 +1,263 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>8. Subprograms </h2>
+
+<h3>General information </h3>
+
+<p>Just like Fortran 77, the language Fortran 90 allows for two
+types of subprograms: (1) Functions, and (2) Subroutines. In
+general, there are two forms of subprograms: (1) Internal, and
+(2) External. Internal subprograms are those routines that may
+appear within the main program by making use of the CONTAINS
+statement. We will not discuss these types of subprograms.
+External subprograms are those which appear in a separate program
+section after the main program END statement. This is simiilar to
+the practices we have already encountered in Fortran 77. We will
+discuss this type of subprogram. </p>
+
+<p>Also, just like Fortran 77, function subprograms in Fortran 90
+have an explicit type and are intended to return one value.
+Subroutine subprograms, on the other hand, have no explicit type
+and return multiple or no values through a parameter call list. </p>
+
+<p>Because we will be focusing on external subprograms, it is
+essential that we make use of a feature of Fortran 90 known as
+the INTERFACE block. This block is safety feature which allows
+main programs and external subprograms to interface
+appropriately. An interface block ensures that the calling
+program and the subprogram have the correct number and type of
+arguments. This helps the compiler to detect incorrect usage of a
+subprogram at compile time. An interface block consists of: </p>
+
+<pre>
+   1. The number of arguments
+   2. The type of each argument
+   3. The type of the value(s) returned by the subprogram
+</pre>
+
+<p>We will address the various aspects of subprograms by a few
+examples. </p>
+
+<h3>Function subprograms </h3>
+
+<p>As an example of a program that makes use of a function
+subprogram, consider the following </p>
+
+<pre>
+PROGRAM Area
+!---------------------------------------------------------------------
+!
+!  This program computes the area of a circle given the input radius
+!
+!  Uses:  FUNCTION Area_Circle (r)
+!
+!---------------------------------------------------------------------
+IMPLICIT NONE
+
+INTERFACE 
+   FUNCTION Area_Circle (r)
+     REAL, Area_Circle
+     REAL, INTENT(IN) :: r
+   END FUNCTION Area_Circle
+END INTERFACE
+
+! Declare local variables
+REAL :: radius
+
+!  Prompt user for radius of circle
+write(*, '(A)', ADVANCE = &quot;NO&quot;) &quot;Enter the radius of the circle:  &quot;
+read(*,*) radius
+
+! Write out area of circle using function call
+write(*,100) &quot;Area of circle with radius&quot;, radius, &quot; is&quot;, &amp;
+            Area_Circle(radius)
+100 format (A, 2x, F6.2, A, 2x, F11.2)
+
+END PROGRAM Area
+
+!-----Area_Circle----------------------------------------------------
+!
+!  Function to compute the area of a circle of given radius
+!
+!---------------------------------------------------------------------
+FUNCTION Area_Circle(r)
+
+IMPLICIT NONE
+REAL :: Area_Circle
+REAL, INTENT(IN) :: r
+
+! Declare local constant Pi
+REAL, PARAMETER :: Pi = 3.1415927
+
+Area_Circle = Pi * r * r
+
+END FUNCTION Area_Circle
+</pre>
+
+<p>This program makes use of the function Area_Circle to compute
+the area of a circle of radius r. The function appears after the
+END PROGRAM of the main program Area, so it is classified as an
+external subprogram. Because it is an external routine, the main
+program makes use of an interface block to define all of the
+parameters required by the function Area_Circle. </p>
+
+<p>The Fortran 90 version of the function subprogram operates in
+much the same manner as the function subprogram in Fortran 77.
+Note that the only substantive difference here is the ability to
+explicitly declare the arguments of the function itself. Take
+special note of the type descriptor INTENT(IN). This attribute of
+the variable r in the function subprogram identifies the variable
+r as a strictly input variable. As such it cannot be modified by
+the subprogram and its modified value unintentionally returned to
+the main program. </p>
+
+<p>Note also the use of the I/O specifier ADVANCE =
+&quot;NO&quot; in the write statement prompting the user for the
+radius of the circle. This option allows the line not to advance
+after the prompting statement is given. The line will advance on
+the screen after the user inputs the value of the radius. </p>
+
+<h3>Subroutine subprograms </h3>
+
+<p>An example of a Fortran 90 subroutine subprogram in action is
+given here </p>
+
+<pre>
+PROGRAM Area
+!---------------------------------------------------------------------
+!
+!  This program computes the area of a circle given the input radius
+!
+!  Uses:  SUBROUTINE Compute_Area(r, Area)
+!
+!---------------------------------------------------------------------
+IMPLICIT NONE
+
+INTERFACE 
+   SUBROUTINE Compute_Area(r, Area)
+     REAL, INTENT(IN) :: r
+     REAL, INTENT(OUT) :: Area
+   END SUBROUTINE Compute_Area
+END INTERFACE
+
+! Declare local variables
+REAL :: radius, Area_Circle
+
+! Prompt user for radius of circle
+write(*, '(A)', ADVANCE = &quot;NO&quot;) &quot;Enter the radius of the circle:  &quot;
+read(*,*) radius
+
+! Call subroutine to compute area of circle
+CALL Compute_Area(radius, Area_Circle)
+
+! Write out area of circle 
+write(*,100) &quot;Area of circle with radius&quot;, radius, &quot; is&quot;, &amp;
+            Area_Circle
+100 format (A, 2x, F6.2, A, 2x, F11.2)
+
+END PROGRAM Area
+
+!-----Compute_Area---------------------------------------------------
+!
+!  Subroutine to compute the area of a circle of given radius
+!
+!---------------------------------------------------------------------
+SUBROUTINE Compute_Area(r, Area)
+
+IMPLICIT NONE
+REAL, INTENT(IN) :: r
+REAL, INTENT(OUT) :: Area
+
+! Declare local constant Pi
+REAL, PARAMETER :: Pi = 3.1415927
+
+Area = Pi * r * r
+
+END SUBROUTINE Compute_Area
+</pre>
+
+<p>This program makes use of the subroutine Compute_Area to
+compute the area of a circle of radius r. Again, the
+functionality here is much the same as that of subroutines in
+Fortran 77. </p>
+
+<p>Note the use of the interface block to define the parameters
+in the external subroutine as well as the use of the attribute
+INTENT(OUT) for the return variable Area. </p>
+
+<h3>Recursive subprograms </h3>
+
+<p>Fortran 90 also allows the use of recursive subprograms. As an
+example of the utility of such a feature, look at this program
+which calculates the value of n! using a recirsive function
+subprogram: </p>
+
+<pre>
+PROGRAM Compute_Factorial
+!---------------------------------------------------------------------
+!
+!  This program computes n! using a recursive function
+!
+!  Uses:  FUNCTION Factorial(n)
+!
+!---------------------------------------------------------------------
+IMPLICIT NONE
+
+INTERFACE 
+   FUNCTION Factorial(n)
+     INTEGER :: Factorial
+     INTEGER, INTENT(IN) :: n
+   END FUNCTION Factorial
+END INTERFACE
+
+! Declare local variables
+INTEGER :: n
+
+!  Prompt user for radius of circle
+write(*, '(A)', ADVANCE = &quot;NO&quot;) &quot;Enter n for computing n!:  &quot;
+read(*,*) n
+
+! Write out value of factorial using function call
+write(*,100) n, &quot;factorial is &quot;, Factorial(n)
+100 format (I3, 2x, A, 2x, I12)
+
+END PROGRAM Compute_Factorial
+
+!-----Factorial------------------------------------------------------
+!
+!  Function to calculate factorials resursively
+!
+!---------------------------------------------------------------------
+RECURSIVE FUNCTION Factorial(n)  RESULT(Fact)
+
+IMPLICIT NONE
+INTEGER :: Fact
+INTEGER, INTENT(IN) :: n
+
+IF (n == 0) THEN
+   Fact = 1
+ELSE
+   Fact = n * Factorial(n-1)
+END IF
+
+END FUNCTION Factorial
+</pre>
+
+<p>Note the attribute RECURSIVE applied to the function
+Factorial. Also note the RESULT value in the function. This
+syntax is needed so that the subprogram knows when (and what) to
+return to the main program when the recursive loop is finished. </p>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

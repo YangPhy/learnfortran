@@ -1,0 +1,101 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>4. Basic program structure </h2>
+
+<h3>Key features </h3>
+
+<ul>
+    <li>Free-form source code is allowed. Statements may begin in
+        any column. </li>
+    <li>Lines may extend to 132 characters. </li>
+    <li>More than one statement may be placed on a line. A
+        semicolon is used as the delimiter to separate
+        statements. </li>
+    <li>In-line comments are allowed. These comments begin with
+        an exclamation point and extend to the end of the line. </li>
+    <li>Continuation statements are indicated by the placement of
+        an ampersand (&amp;) as the last non-blank character in
+        the line being continued. Up to 39 continuations are
+        allowed. </li>
+    <li>Variable names may consist of up to 31 characters. Valid
+        characters include all letters, digits, and the
+        underscore symbol (_). The first character of a variable
+        name must be a letter. </li>
+</ul>
+
+<h3>Declarations </h3>
+
+<ul>
+    <li>The command IMPLICIT NONE is allowed. This feature
+        cancels the default naming convention. When invoked,
+        program variables MUST be specified explicitly. </li>
+    <li>Modified type specification statements may be used to
+        initialize variables or parameters, e.g., <pre>
+   REAL :: Area = 0.
+   INTEGER :: Num_Months = 12
+   REAL, PARAMETER :: Pi = 3.1415927
+</pre>
+        <p>declares Area to be a real variable with initial value
+        0., Num_Months to be an integer variable with the initial
+        value 12, and Pi a real parameter with the value
+        3.1415927. </p>
+    </li>
+    <li>The separator :: is required in a type specification
+        statement whenever it is used to initialize a variable or
+        to declare a special attribute (such as PARAMETER). It
+        may be omitted in other cases. For example, to declare
+        the variable Area_circle to be real, we may say <pre>
+   REAL Area_circle
+</pre>
+        <p>or, equivalently </p>
+        <pre>
+   REAL :: Area_circle
+</pre>
+        <p>The latter form is preferred for the purpose of
+        uniform programming style. </p>
+    </li>
+    <li>The precision of a real, integer, complex, or logical
+        variable may be specified using a kind type parameter.
+        For example, to declare a variable A to be a real number
+        with at least 10 decimal places of precision with a range
+        of at least -10^34 to 10^34, do the following: <pre>
+   REAL(KIND = SELECTED_REAL_KIND(10,34)) :: A
+</pre>
+        <p>If the processor you are using is unable to support a
+        variable with this type specification, a compile-time
+        error will result. </p>
+        <p>To declare a real variable to have the equivalent of
+        Fortran 77 accuracy DOUBLE PRECISION, simply do this: </p>
+        <pre>
+   INTEGER, PARAMETER :: DP = SELECTED_REAL_KIND(14)
+   REAL(KIND = DP) :: A
+</pre>
+        <p>This declares the variable A to be of type real and
+        have at least 14 decimal places of accuracy. </p>
+    </li>
+</ul>
+
+<h3>Program composition </h3>
+
+<p>The basic form of a Fortran 90 program is as follows: </p>
+
+<pre>
+PROGRAM <em>name</em>
+   <em>declarations</em>
+   <em>executable statements</em>
+END PROGRAM <EM.name</EM>
+</pre>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

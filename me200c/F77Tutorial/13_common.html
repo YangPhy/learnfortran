@@ -1,0 +1,171 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>13. Common blocks</h2>
+
+<p>Fortran 77 has no <em>global</em> variables, i.e. variables
+that are shared among several program units (subroutines). The
+only way to pass information between subroutines we have seen so
+far is to use the subroutine parameter list. Sometimes this is
+inconvenient, e.g., when many subroutines share a large set of
+parameters. In such cases one can use a <em>common block</em>.
+This is a way to specify that certain variables should be shared
+among certain subroutines. But in general, the use of common
+blocks should be minimized. </p>
+
+<h3>Example</h3>
+
+<p>Suppose you have two parameters alpha and beta that many of
+your subroutines need. The following example shows how it can be
+done using common blocks. </p>
+
+<pre>
+      program main
+      <em>some declarations</em>
+      real alpha, beta
+      common /coeff/ alpha, beta
+
+      <em>statements</em>
+      stop
+      end
+
+      subroutine sub1 (<em>some arguments</em>)
+      <em>declarations of arguments</em>
+      real alpha, beta
+      common /coeff/ alpha, beta
+
+      <em>statements</em>
+      return
+      end
+
+      subroutine sub2 (<em>some arguments</em>)
+      <em>declarations of arguments</em>
+      real alpha, beta
+      common /coeff/ alpha, beta
+
+      <em>statements</em>
+      return
+      end
+</pre>
+
+<p>Here we define a common block with the name <tt>coeff</tt>.
+The contents of the common block are the two variables <tt>alpha</tt>
+and <tt>beta</tt>. A common block can contain as many variables
+as you like. They do not need to all have the same type. Every
+subroutine that wants to use any of the variables in the common
+block has to declare the whole block. </p>
+
+<p>Note that in this example we could easily have avoided common
+blocks by passing alpha and beta as parameters (arguments). A
+good rule is to try to avoid common blocks if possible. However,
+there are a few cases where there is no other solution. </p>
+
+<h3>Syntax</h3>
+
+<pre>
+      common / <em>name</em> / <em>list-of-variables</em>
+</pre>
+
+<p>You should know that </p>
+
+<ul>
+    <li>The <tt>common</tt> statement should appear together with
+        the variable declarations, before the executable
+        statements. </li>
+    <li>Different common blocks must have different names (just
+        like variables). </li>
+    <li>A variable <em>cannot</em> belong to more than one common
+        block. </li>
+    <li>The variables in a common block do not need to have the
+        same names each place they occur (although it is a good
+        idea to do so), but they must be listed in the same order
+        and have the same type and size. </li>
+</ul>
+
+<p>To illustrate this, look at the following continuation of our
+example: </p>
+
+<pre>
+      subroutine sub3 (<em>some arguments</em>)
+      <em>declarations of arguments</em>
+      real a, b
+      common /coeff/ a, b
+
+      <em>statements</em>
+      return
+      end
+</pre>
+
+<p>This declaration is equivalent to the previous version that
+used <tt>alpha</tt> and <tt>beta</tt>. It is recommended that you
+always use the same variable names for the same common block to
+avoid confusion. Here is a dreadful example: </p>
+
+<pre>
+      subroutine sub4 (<em>some arguments</em>)
+      <em>declarations of arguments</em>
+      real alpha, beta
+      common /coeff/ beta, alpha
+
+      <em>statements</em>
+      return
+      end
+</pre>
+
+<p>Now alpha is the beta from the main program and vice versa. If
+you see something like this, it is probably a mistake. Such bugs
+are very hard to find. </p>
+
+<h3>Arrays in common blocks</h3>
+
+<p>Common blocks can include arrays, too. But again, this is not
+recommended. The major reason is flexibility. An example shows
+why this is such a bad idea. Suppose we have the following
+declarations in the main program: </p>
+
+<pre>
+      program main
+      integer nmax
+      parameter (nmax=20)
+      integer n
+      real A(nmax, nmax)
+      common /matrix/ A, n
+</pre>
+
+<p>This common block contains first all the elements of A, then
+the integer <em>n</em>. Now assume you want to use the matrix A
+in some subroutines. Then you have to include the same
+declarations in all these subroutines, e.g. </p>
+
+<pre>
+      subroutine sub1 (...)
+      integer nmax
+      parameter (nmax=20)
+      integer n
+      real A(nmax, nmax)
+      common /matrix/ A, n
+</pre>
+
+<p>Arrays with variable dimensions cannot appear in common
+blocks, thus the value of <em>nmax</em> has to be exactly the
+same as in the main program. Recall that the size of a matrix has
+to be known at compile time, hence nmax has to be defined in a
+parameter statement. </p>
+
+<p>This example shows there is usually nothing to gain by putting
+arrays in common blocks. Hence the preferred method in Fortran 77
+is to pass arrays as arguments to subroutines (along with the
+leading dimensions). </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

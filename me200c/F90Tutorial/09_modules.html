@@ -1,0 +1,251 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>9. Modules </h2>
+
+<p>In typical engineering programming applications, it often the
+case that there are parameters, variables, and subprograms that
+must be shared by several program units. Fortran 90 provides a
+special program unit known as a MODULE that conveniently packages
+collections of declarations and subprograms so that they may be
+imported into other program units. The functionality of the
+module unit is similar to that of the C header file. </p>
+
+<h3>Simple modules </h3>
+
+<p>A form of a module is as follows </p>
+
+<pre>
+   MODULE <em>name</em>
+      <em>specifications</em>
+   END MODULE <em>name</em>
+</pre>
+
+<p>Note that this is the simplest form of the module unit. More
+general forms exist which allow the inclusion of subprograms and
+procedures. We will only address the simplest form of the module
+unit here. A program module is made accessible to the various
+program units by way of the USE statement. </p>
+
+<p>Consider the following program which makes use of a module in
+the computation of the area of a circle: </p>
+
+<pre>
+MODULE Circle
+!---------------------------------------------------------------------
+!
+!  Module containing definitions of variables needed to
+!  compute the area of a circle of radius r
+!
+!---------------------------------------------------------------------
+   REAL, PARAMETER :: Pi = 3.1415927
+   REAL :: radius
+END MODULE Circle
+
+PROGRAM Area
+!---------------------------------------------------------------------
+!
+!  This program computes the area of a circle given the input radius
+!
+!  Uses:  MODULE Circle
+!         FUNCTION Area_Circle (r)
+!
+!---------------------------------------------------------------------
+USE Circle, ONLY : radius
+IMPLICIT NONE
+
+INTERFACE 
+   FUNCTION Area_Circle (r)
+     REAL, INTENT(IN) :: r
+   END FUNCTION Area_Circle
+END INTERFACE
+
+
+!  Prompt user for radius of circle
+write(*, '(A)', ADVANCE = &quot;NO&quot;) &quot;Enter the radius of the circle:  &quot;
+read(*,*) radius
+
+! Write out area of circle using function call
+write(*,100) &quot;Area of circle with radius&quot;, radius, &quot; is&quot;, &amp;
+            Area_Circle(radius)
+100 format (A, 2x, F6.2, A, 2x, F11.2)
+
+END PROGRAM Area
+
+!-----Area_Circle----------------------------------------------------
+!
+!  Function to compute the area of a circle of given radius
+!
+!---------------------------------------------------------------------
+FUNCTION Area_Circle(r)
+USE Circle, ONLY : Pi
+
+IMPLICIT NONE
+REAL :: Area_Circle
+REAL, INTENT(IN) :: r
+
+Area_Circle = Pi * r * r
+
+END FUNCTION Area_Circle
+</pre>
+
+<p>In this example, we define a module which declares the type of
+the two real variables Pi and radius. In addition, in this
+module, we declare the value of the parameter Pi. To make use of
+the module in the main program, we employ the USE statement. We
+use a special form of the USE statement that specifies that we
+are only interested in the value radius in the main program,
+namely, USE Circle, ONLY : radius. Similarly, we make use of only
+the parameter Pi in the function subprogram Area_Circle by way of
+the USE statement appearing in that routine. </p>
+
+<p>The USE statement *** MUST *** appear at the beginning of the
+declaration part of the program unit making use of the module!!
+It must appear EVEN BEFORE the statement IMPLICIT NONE! </p>
+
+<h3>Modules for dynamic array allocation </h3>
+
+<p>There are times when you may wish to declare an array to be
+allocatable. However, you may wish to allocate its memory storage
+in a subprogram rather than in the main program. Unfortunately,
+allocatable arrays are not allowed to be passed as formal
+arguments to subprograms. The module construct provides a way for
+you to pass dynamically allocatable arrays to several program
+units. Consider the following example: </p>
+
+<pre>
+MODULE Dyn_Array
+!---------------------------------------------------------------------
+!
+!  Module containing definitions needed to dynamically allocate 
+!  the values of an array 
+!
+!---------------------------------------------------------------------
+   INTEGER :: n
+   REAL, DIMENSION(:), ALLOCATABLE :: A
+END MODULE Dyn_Array
+
+PROGRAM Play_with_Array
+!---------------------------------------------------------------------
+!
+!  This program calls a subroutine to read in the values of
+!  a dynamically allocated array A and calls several 1D intrinsic
+!  array functions
+!
+!  Uses:  MODULE Dyn_Array
+!         SUBROUTINE Get_Data
+!         SUBROUTINE Dealloc_Array
+!
+!---------------------------------------------------------------------
+USE Dyn_Array
+IMPLICIT NONE
+
+INTERFACE 
+   SUBROUTINE Get_Data
+   END SUBROUTINE Get_Data
+END INTERFACE
+
+INTERFACE 
+   SUBROUTINE Dealloc_Array
+   END SUBROUTINE Dealloc_Array
+END INTERFACE
+
+! Declare local variables
+REAL :: Prod_A, Sum_A
+
+! Call subroutine to read in data for array A
+CALL Get_Data
+
+! Use intrinsic functions to generate data
+Prod_A = PRODUCT(A)
+
+! Write out product of elements of array A
+write(*,100) &quot;The product of the elements of array A area&quot;, &amp;
+              Prod_A
+
+! Use intrinsic function to generate more data
+Sum_A = SUM(A)
+
+! Write out sum of elements of array A
+write(*,100) &quot;The sum of the elements of array A are&quot;, &amp;
+             Sum_A 
+
+! Now, deallocate memory containing array A
+CALL Dealloc_Array
+
+! Place for format statement to live
+100 format (A, 2x, F11.2)
+
+END PROGRAM Play_with_Array
+
+!-----Get_Data--------------------------------------------------------
+!
+!  Subroutine to read in the number of values to fill A array,
+!  allocate space, and to assign the values to A
+!
+!  Uses:  MODULE Dyn_Array
+!
+!---------------------------------------------------------------------
+SUBROUTINE Get_Data
+USE Dyn_Array
+
+IMPLICIT NONE
+
+! Declare local variables
+INTEGER :: AllocateStatus
+
+! Read in number of array elements from user
+write(*,'(A)', ADVANCE = &quot;NO&quot;) &quot;Input the number of elements desired:  &quot;
+read(*,*) n
+
+! Allocate storage for array A accordingly
+ALLOCATE( A(n), STAT = AllocateStatus)
+IF (AllocateStatus /= 0) STOP &quot;*** Not enough memory ***&quot;
+
+! Read in values for A
+write(*, '(A)', ADVANCE = &quot;NO&quot;) &quot;Input array values:  &quot;
+read(*,*) A
+
+END SUBROUTINE Get_Data
+
+!-----Dealloc_Array---------------------------------------------------
+!
+!  Subroutine to deallocate array space
+!
+!  Uses:  MODULE Dyn_Array
+!
+!---------------------------------------------------------------------
+SUBROUTINE Dealloc_Array
+USE Dyn_Array
+
+IMPLICIT NONE
+
+! Declare local variables
+INTEGER :: DeAllocateStatus
+
+! Deallocate storage for array A 
+DEALLOCATE( A, STAT = DeAllocateStatus)
+IF (DeAllocateStatus /= 0) STOP &quot;*** Trouble deallocating ***&quot;
+
+END SUBROUTINE Dealloc_Array
+</pre>
+
+<p>Here we make use of the module Dyn_Array to declare the array
+A an allocatable real array. The integer n will be the size of
+the array when its value is input by the user in subroutine
+Get_Data. Note how the subroutines used to allocate and
+deallocate memory use no formal arguments. This is because all of
+the arguments needed are passed via the module Dyn_Array. </p>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

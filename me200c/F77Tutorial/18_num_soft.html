@@ -1,0 +1,111 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>18. Numerical Software</h2>
+
+<p>Most computational problems in engineering can be broken down
+into well-known types of calculations, e.g., solving linear
+systems of equations, computing fast Fourier transforms, etc.
+Furthermore, software to solve these subtasks is often already
+available. Consequently, you only have to write a short <em>driver</em>
+routine for your particular problem. This way people don't have
+to reinvent the wheel over and over again. </p>
+
+<p>The best software for a particular type of problem must often
+be purchased from a commercial company, but for linear algebra
+and some other basic numerical computations there is high-quality
+free software available (through Netlib). </p>
+
+<h3>Netlib</h3>
+
+<p>Netlib (the NET LIBrary) is a large collection of freely
+available software, documents, and databases of interest to the
+numerical, scientific computing, and other communities. The
+repository is maintained by AT&amp;T Bell Laboratories, the
+University of Tennessee and Oak Ridge National Laboratory, and
+replicated at several sites around the world. </p>
+
+<p>Netlib contains high-quality software that has been
+extensively tested, but (as all free software) it comes with no
+warranty and little (if any) support. In order to use the
+software, you first have to download it to your computer and then
+compile it yourself. </p>
+
+<p>There are many ways to access Netlib. The most common methods
+are the World Wide Web, e-mail, and ftp: </p>
+
+<ul>
+    <li><strong>World Wide Web (WWW) </strong><address>
+            <a href="http://www.netlib.org/">http://www.netlib.org/</a>
+        </address>
+    </li>
+    <li><strong>e-mail<br>
+        </strong>Send the message: <pre>
+send index
+</pre>
+        <p>to </p>
+        <address>
+            netlib@netlib.org 
+        </address>
+        <p>to receive a contents summary and instructions. </p>
+    </li>
+    <li><strong>ftp<br>
+        </strong>Anonymous ftp to: <address>
+            <a href="ftp://ftp.netlib.org/">ftp.netlib.org</a> 
+        </address>
+    </li>
+</ul>
+
+<p>Two of the most popular packages at Netlib are the BLAS and
+LAPACK libraries which we will describe in later sections. </p>
+
+<h3>Some commercial Fortran packages</h3>
+
+<p>In this section we briefly mention a few of the largest
+(commercial) software packages for general numerical
+computations. </p>
+
+<dl>
+    <dt><strong>NAG</strong> </dt>
+    <dd>The Numerical Algorithms Group (<a
+        href="http://www.nag.co.uk/">NAG</a>) has developed a <a
+        href="http://www.nag.co.uk:70/numeric/FLOLCH.html">Fortran
+        library</a> containing over 1000 user-callable
+        subroutines for solving general applied math problems,
+        including: ordinary and partial differential equations,
+        optimization problems, FFT and other transforms,
+        quadrature, linear algebra, non-linear equations,
+        integral equations, and more. </dd>
+    <dt><strong>IMSL</strong> </dt>
+    <dd>The <a href="http://www.vni.com/">IMSL Fortran numerical
+        library</a> is made by <a href="http://www.vni.com/">Visual
+        Numerics, Inc. </a>and covers most of the areas contained
+        in the NAG library. It also has support for analyzing and
+        presenting statistical data in scientific and business
+        applications. </dd>
+    <dt><strong>Numerical recipes</strong> </dt>
+    <dd>The books <em>Numerical Recipes in C/Fortran</em> are
+        very popular among engineers because they can be used as
+        a cookbooks where you can find a &quot;recipe&quot; to
+        solve the problem at hand. However, the corresponding
+        software <a
+        href="http://cfata2.harvard.edu/nr/nrhome.html">Numerical
+        Recipes</a> is in no way (e.g. scope or quality)
+        comparable to that provided by NAG or IMSL. </dd>
+</dl>
+
+<p>It should be mentioned that all the software listed above also
+comes in a C version (or is at least callable from C). </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

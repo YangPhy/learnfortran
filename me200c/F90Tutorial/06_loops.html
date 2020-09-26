@@ -1,0 +1,60 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>6. Loops </h2>
+
+<ul>
+    <li>DO loops may have either of the two forms: <pre>
+   DO <em>index variable</em> = <em>start</em>, <em>end</em>, <em>step</em>
+       <em>statements</em>
+   END DO
+</pre>
+        <p>or, </p>
+        <pre>
+   DO <em>n</em> <em>index variable</em> = <em>start</em>, <em>end</em>, <em>step</em>
+       <em>statements</em>
+   <em>n</em> CONTINUE
+</pre>
+        <p>In both cases, the step variable is optional and is
+        assumed to have the value 1 if omitted. As with IF-ELSE
+        and CASE constructs, DO loops may also have names. </p>
+    </li>
+    <li>WHILE loops are allowed. They have the general form: <pre>
+   DO WHILE (<em>logical argument</em>)
+      <em>statements</em>
+   END DO
+</pre>
+    </li>
+    <li>An &quot;infinite&quot; loop may be performed as follows:
+        <pre>
+   DO
+      .
+      .
+      .
+
+      <em>conditional statement</em> EXIT
+      .
+      .
+      .
+
+   END DO
+</pre>
+        <p>In this instance, a set of statements are executed
+        repetitively until the conditional statement is
+        satisfied. When this occurs, program control jumps to the
+        next executable statement following the END DO. </p>
+    </li>
+</ul>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

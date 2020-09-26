@@ -1,0 +1,222 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>12. Arrays in subprograms</h2>
+
+<p>Fortran subprogram calls are based on <em>call by reference</em>.
+This means that the calling parameters are not copied to the
+called subprogram, but rather that the <em>addresses</em> of the
+parameters (variables) are passed. This saves a lot of memory
+space when dealing with arrays. No extra storage is needed as the
+subroutine operates on the same memory locations as the calling
+(sub-)program. However, you as a programmer have to know about
+this and take it into account. </p>
+
+<p>It is possible to declare local arrays in Fortran subprograms,
+but this feature is rarely used. Typically, all arrays are
+declared (and dimensioned) in the main program and then passed on
+to the subprograms as needed. </p>
+
+<h3>Variable length arrays</h3>
+
+<p>A basic vector operation is the <em>saxpy</em> operation. This
+calculates the expression </p>
+
+<pre>
+      y := alpha*x + y
+</pre>
+
+<p>where alpha is a scalar but x and y are vectors. Here is a
+simple subroutine for this: </p>
+
+<pre>
+      subroutine saxpy (n, alpha, x, y)
+      integer n
+      real alpha, x(*), y(*)
+c
+c Saxpy: Compute y := alpha*x + y,
+c where x and y are vectors of length n (at least).
+c
+c Local variables
+      integer i
+c
+      do 10 i = 1, n
+         y(i) = alpha*x(i) + y(i)
+   10 continue
+c
+      return
+      end
+</pre>
+
+<p>The only new feature here is the use of the asterisk in the
+declarations <em>x(*)</em> and <em>y(*)</em>. This notation says
+that x and y are arrays of arbitrary length. The advantage of
+this is that we can use the same subroutine for all vector
+lengths. Recall that since Fortran is based on call-by-reference,
+no additional space is allocated but rather the subroutine works
+directly on the array elements from the calling routine/program.
+It is the responsibility of the programmer to make sure that the
+vectors x and y really have been declared to have length n or
+more in some other program unit. A common error in Fortran 77
+occurs when you try to access out-of-bounds array elements. </p>
+
+<p>We could also have declared the arrays like this: </p>
+
+<pre>
+      real x(n), y(n)
+</pre>
+
+<p>Most programmers prefer to use the asterisk notation to
+emphasize that the &quot;real array length&quot; is unknown. Some
+old Fortran 77 programs may declare variable length arrays like
+this: </p>
+
+<pre>
+      real x(1), y(1)
+</pre>
+
+<p>This is legal syntax even if the array lengths are greater
+than one! But this is poor programming style and is strongly
+discouraged. </p>
+
+<h3>Passing subsections of arrays</h3>
+
+<p>Next we want to write a subroutine for matrix-vector
+multiplication. There are two basic ways to do this, either by
+using inner products or saxpy operations. Let us be modular and
+re-use the saxpy code from the previous section. A simple code is
+given below. </p>
+
+<pre>
+      subroutine matvec (m, n, A, lda, x, y)
+      integer m, n, lda
+      real x(*), y(*), A(lda,*)
+c
+c Compute y = A*x, where A is m by n and stored in an array
+c with leading dimension lda.
+c
+c Local variables
+      integer i, j
+      
+c Initialize y
+      do 10 i = 1, m
+         y(i) = 0.0
+   10 continue
+
+c Matrix-vector product by saxpy on columns in A.
+c Notice that the length of each column of A is m, not n!
+      do 20 j = 1, n
+         call saxpy (m, x(j), A(1,j), y)
+   20 continue
+
+      return
+      end
+</pre>
+
+<p>There are several important things to note here. First, note
+that even if we have written the code as general as possible to
+allow for arbitrary dimensions m and n, we still need to specify
+the leading dimension of the matrix A. The variable length
+declaration (*) can only be used for the <em>last</em> dimension
+of an array! The reason for this is the way Fortran 77 stores
+multidimensional arrays (see the section on arrays). </p>
+
+<p>When we compute y = A*x by saxpy operations, we need to access
+columns of A. The j'th column of A is A(1:m,j). However, in
+Fortran 77 we cannot use such subarray syntax (but it is
+encouraged in Fortran 90!). So instead we provide a <em>pointer</em>
+to the first element in the column, which is A(1,j) (it is not
+really a pointer, but it may be helpful to think of it as if it
+were). We know that the next memory locations will contain the
+succeeding array elements in this column. The saxpy subroutine
+will treat A(1,j) as the first element of a vector, and does not
+know that this vector happens to be a column of a matrix. </p>
+
+<p>Finally, note that we have stuck to the convention that
+matrices have m rows and n columns. The index i is used as a row
+index (1 to m) while the index j is used as a column index (1 to
+n). Most Fortran programs handling linear algebra use this
+notation and it makes it a lot easier to read the code! </p>
+
+<h3>Different dimensions</h3>
+
+<p>Sometimes it can be beneficial to treat a 1-dimensional array
+as a 2-dimensional array and vice versa. This is fairly simple to
+do in Fortran 77, some will say it is <em>too</em> easy! </p>
+
+<p>Let us look at a very simple example. Another basic vector
+operation is <em>scaling</em>, i.e. multiplying each element in a
+vector by the same constant. Here is a subroutine for this: </p>
+
+<pre>
+      subroutine scale(n, alpha, x)
+      integer n
+      real alpha, x(*)
+c
+c Local variables
+      integer i
+
+      do 10 i = 1, n
+         x(i) = alpha * x(i)
+   10 continue
+
+      return
+      end
+</pre>
+
+<p>Now suppose we have a m by n matrix we want to scale. Instead
+of writing a new subroutine for this, we can simply treat the
+matrix as a vector and use the subroutine <tt>scale</tt>. A
+simple version is given first: </p>
+
+<pre>
+      integer m, n
+      parameter (m=10, n=20)
+      real alpha, A(m,n)
+
+c Some statements here define A...
+
+c Now we want to scale A
+      call scale(m*n, alpha, A)
+</pre>
+
+<p>Note that this example works because we assume the declared
+dimension of A equals the actual dimension of the matrix stored
+in A. This does not hold in general. Often the leading dimension
+lda is different from the actual dimension m, and great care must
+be taken to handle this correctly. Here is a more robust
+subroutine for scaling a matrix that uses the subroutine <tt>scale</tt>:
+</p>
+
+<pre>
+      subroutine mscale(m, n, alpha, A, lda)
+      integer m, n, lda
+      real alpha, A(lda,*)
+c
+c Local variables
+      integer j
+
+      do 10 j = 1, n
+         call scale(m, alpha, A(1,j) )
+   10 continue
+
+      return
+      end
+</pre>
+
+<p>This version works even when m is not equal to lda since we
+scale one column at a time and only process the m first elements
+of each column (leaving the rest untouched). </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>10. Arrays</h2>
+
+<p>Many scientific computations use vectors and matrices. The
+data type Fortran uses for representing such objects is the <em>array</em>.
+A one-dimensional array corresponds to a vector, while a
+two-dimensional array corresponds to a matrix. To fully
+understand how this works in Fortran 77, you will have to know
+not only the syntax for usage, but also how these objects are
+stored in memory in Fortran 77. </p>
+
+<h3>One-dimensional arrays</h3>
+
+<p>The simplest array is the one-dimensional array, which is just
+a sequence of elements stored consecutively in memory. For
+example, the declaration </p>
+
+<pre>
+      real a(20)
+</pre>
+
+<p>declares <tt>a</tt> as a real array of length 20. That is, <tt>a</tt>
+consists of 20 real numbers stored contiguously in memory. By
+convention, Fortran arrays are indexed from 1 and up. Thus the
+first number in the array is denoted by <tt>a(1)</tt> and the
+last by <tt>a(20)</tt>. However, you may define an arbitrary
+index range for your arrays using the following syntax: </p>
+
+<pre>
+      real b(0:19), weird(-162:237)
+</pre>
+
+<p>Here, <tt>b</tt> is exactly similar to <tt>a</tt> from the
+previous example, except the index runs from 0 through 19. <tt>weird</tt>
+is an array of length 237-(-162)+1 = 400. </p>
+
+<p>The type of an array element can be any of the basic data
+types. Examples: </p>
+
+<pre>
+      integer i(10)
+      logical aa(0:1)
+      double precision x(100)
+</pre>
+
+<p>Each element of an array can be thought of as a separate
+variable. You reference the i'th element of array <tt>a</tt> by <tt>a(i)</tt>.
+Here is a code segment that stores the 10 first square numbers in
+the array <tt>sq</tt>: </p>
+
+<pre>
+      integer i, sq(10)
+
+      do 100 i = 1, 10
+         sq(i) = i**2
+  100 continue
+</pre>
+
+<p>A common bug in Fortran is that the program tries to access
+array elements that are out of bounds or undefined. This is the
+responsibility of the programmer, and the Fortran compiler will
+not detect any such bugs! </p>
+
+<h3>Two-dimensional arrays</h3>
+
+<p>Matrices are very important in linear algebra. Matrices are
+usually represented by two-dimensional arrays. For example, the
+declaration </p>
+
+<pre>
+      real A(3,5)
+</pre>
+
+<p>defines a two-dimensional array of 3*5=15 real numbers. It is
+useful to think of the first index as the row index, and the
+second as the column index. Hence we get the graphical picture: </p>
+
+<pre>
+   (1,1)  (1,2)  (1,3)  (1,4)  (1,5)
+   (2,1)  (2,2)  (2,3)  (2,4)  (2,5)
+   (3,1)  (3,2)  (3,3)  (3,4)  (3,5)
+</pre>
+
+<p>Two-dimensional arrays may also have indices in an arbitrary
+defined range. The general syntax for declarations is: </p>
+
+<pre>
+     <em>name (low_index1 : hi_index1, low_index2 : hi_index2)</em>
+</pre>
+
+<p>The total size of the array is then </p>
+
+<pre>
+     <em>size = (hi_index1-low_index1+1)*(hi_index2-low_index2+1)</em>
+</pre>
+
+<p>It is quite common in Fortran to declare arrays that are
+larger than the matrix we want to store. (This is because Fortran
+does not have dynamic storage allocation.) This is perfectly
+legal. Example: </p>
+
+<pre>
+      real A(3,5)
+      integer i,j
+c
+c     We will only use the upper 3 by 3 part of this array.
+c
+      do 20 j = 1, 3
+         do 10 i = 1, 3
+            a(i,j) = real(i)/real(j)
+   10    continue
+   20 continue
+</pre>
+
+<p>The elements in the submatrix A(1:3,4:5) are undefined. Do not
+assume these elements are initialized to zero by the compiler
+(some compilers will do this, but not all). </p>
+
+<h3>Storage format for 2-dimensional arrays</h3>
+
+<p>Fortran stores higher dimensional arrays as a contiguous
+sequence of elements. It is important to know that 2-dimensional
+arrays are stored <em>by column</em>. So in the above example,
+array element (1,2) will follow element (3,1). Then follows the
+rest of the second column, thereafter the third column, and so
+on. </p>
+
+<p>Consider again the example where we only use the upper 3 by 3
+submatrix of the 3 by 5 array <tt>A(3,5)</tt>. The 9 interesting
+elements will then be stored in the first nine memory locations,
+while the last six are not used. This works out neatly because
+the <em>leading dimension</em> is the same for both the array and
+the matrix we store in the array. However, frequently the leading
+dimension of the array will be larger than the first dimension of
+the matrix. Then the matrix will <em>not</em> be stored
+contiguously in memory, even if the array is contiguous. For
+example, suppose the declaration was <tt>A(5,3)</tt> instead.
+Then there would be two &quot;unused&quot; memory cells between
+the end of one column and the beginning of the next column (again
+we are assuming the matrix is 3 by 3). </p>
+
+<p>This may seem complicated, but actually it is quite simple
+when you get used to it. If you are in doubt, it can be useful to
+look at how the <em>address</em> of an array element is computed.
+Each array will have some memory address assigned to the
+beginning of the array, that is element (1,1). The address of
+element (i,j) is then given by </p>
+
+<pre>
+      <em>addr</em>[A(i,j)] = <em>addr</em>[A(1,1)] + (j-1)*lda + (i-1)
+</pre>
+
+<p>where <tt>lda</tt> is the leading (i.e. row) dimension of <tt>A</tt>.
+Note that <tt>lda</tt> is in general different from the actual
+matrix dimension. Many Fortran errors are caused by this, so it
+is very important you understand the distinction! </p>
+
+<h3>Multi-dimensional arrays</h3>
+
+<p>Fortran 77 allows arrays of up to seven dimensions. The syntax
+and storage format are analogous to the two-dimensional case, so
+we will not spend time on this. </p>
+
+<h3>The <tt>dimension</tt> statement</h3>
+
+<p>There is an alternate way to declare arrays in Fortran 77. The
+statements </p>
+
+<pre>
+      real A, x
+      dimension x(50)
+      dimension A(10,20)
+</pre>
+
+<p>are equivalent to </p>
+
+<pre>
+      real A(10,20), x(50)
+</pre>
+
+<p>This <tt>dimension</tt> statement is considered old-fashioned
+style today. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

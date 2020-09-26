@@ -1,0 +1,83 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>20. Debugging hints</h2>
+
+<p>It has been estimated that about 90% of the time it takes to
+develop commercial software is spent debugging and testing. This
+shows how important it is to write good code in the first place. </p>
+
+<p>Still, we all discover <em>bugs</em> from time to time. Here
+are some hints for how to track them down. </p>
+
+<h3>Useful compiler options</h3>
+
+<p>Most Fortran compilers will have a set of options you can turn
+on if you like. The following compiler options are specific to
+the Sun Fortran 77 compiler, but most compilers will have similar
+options (although the letters may be different). </p>
+
+<dl>
+    <dt>-ansi </dt>
+    <dd>This will warn you about all non-standard Fortran 77
+        extensions in your program. </dd>
+    <dt>-u </dt>
+    <dd>This will override the implicit type rules and make all
+        variables undeclared initially. If your compiler does not
+        have such an option, you can achieve almost the same
+        thing by adding the declaration <pre>
+      implicit none (a-z)
+</pre>
+        <p>in the beginning of each (sub-)program. </p>
+    </dd>
+    <dt>-C </dt>
+    <dd>Check for array bounds. The compiler will try to detect
+        if you access array elements that are out of bounds. It
+        cannot catch all such errors, however. </dd>
+</dl>
+
+<h3>Some common errors</h3>
+
+<p>Here are some common errors to watch out for: </p>
+
+<ul>
+    <li>Make sure your lines end at column 72. The rest will be
+        ignored! </li>
+    <li>Do your parameter lists in the calling and the called
+        program match? </li>
+    <li>Do your common blocks match? </li>
+    <li>Have you done integer division when you wanted real
+        division? </li>
+    <li>Have you typed an <em>o</em> when you meant 0, an <em>l</em>
+        when you meant 1? </li>
+</ul>
+
+<h3>Debugging tools</h3>
+
+<p>If you have a bug, you have to try to locate it. Syntax errors
+are easy to find. The problem is when you have run-time errors.
+The old-fashioned way to find errors is to add <em>write</em>
+statements in your code and try to track the values of your
+variables. This is a bit tedious since you have to recompile your
+source code every time you change the program slightly. Today one
+can use special <em>debuggers</em> which is a convenient tool.
+You can step through a program line by line or define your own
+break points, you can display the values of the variables you
+want to monitor, and much more. Most UNIX machines will have the
+debuggers <em>dbx</em> and <em>gdb</em>. Unfortunately, these are
+difficult to learn since they have an old-fashioned line-oriented
+user interface. Check if there is a graphical user interface
+available, like, e.g., <em>xdbx</em> or <em>dbxtool</em>. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

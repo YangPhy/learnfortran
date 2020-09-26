@@ -1,0 +1,203 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>17. Format statements</h2>
+
+<p>So far we have mostly used <em>free format</em> input/output.
+This uses a set of default rules for how to input and output
+values of different types (integers, reals, characters, etc.).
+Often the programmer wants to specify some particular input or
+output format, e.g., how many decimals places in real numbers.
+For this purpose Fortran 77 has the <em>format</em> statement.
+The same format statements are used for both input and output. </p>
+
+<h3>Syntax </h3>
+
+<pre>
+      write(*, <em>label</em>) <em>list-of-variables</em>
+ <em>label</em> format <em>format-code</em>
+</pre>
+
+<p>A simple example demonstrates how this works. Say you have an
+integer variable you want to print in a field 4 characters wide
+and a real number you want to print in fixed point notation with
+3 decimal places. </p>
+
+<pre>
+      write(*, 900) i, x
+  900 format (I4,F8.3)
+</pre>
+
+<p>The format label 900 is chosen somewhat arbitrarily, but it is
+common practice to number format statements with higher numbers
+than the control flow labels. After the keyword <tt>format</tt>
+follows the format codes enclosed in parenthesis. The code I4
+stands for an integer with width four, while F8.3 means that the
+number should be printed using fixed point notation with field
+width 8 and 3 decimal places. </p>
+
+<p>The format statement may be located anywhere within the
+program unit. There are two programming styles: Either the format
+statement follows directly after the read/write statement, or all
+the format statements are grouped together at the end of the
+(sub-)program. </p>
+
+<h3>Common format codes</h3>
+
+<p>The most common format code letters are: </p>
+
+<pre>
+   A - text string
+   D - double precision numbers, exponent notation
+   E - real numbers, exponent notation
+   F - real numbers, fixed point format
+   I - integer
+   X - horizontal skip (space)
+   / - vertical skip (newline)
+</pre>
+
+<p>The format code F (and similarly D, E) has the general form F<em>w.d</em>
+where <em>w</em> is an integer constant denoting the field width
+and <em>d</em> is an integer constant denoting the number of
+significant digits. </p>
+
+<p>For integers only the field width is specified, so the syntax
+is <tt>I</tt><em>w</em>. Similarly, character strings can be
+specified as <tt>A</tt><em>w</em> but the field width is often
+dropped. </p>
+
+<p>If a number or string does not fill up the entire field width,
+spaces will be added. Usually the text will be adjusted to the
+right, but the exact rules vary among the different format codes.
+</p>
+
+<p>For horizontal spacing, the <em>n</em><tt>X</tt> code is often
+used. This means <em>n</em> horizontal spaces. If <em>n</em> is
+omitted, <em>n=1</em> is assumed. For vertical spacing
+(newlines), use the code <tt>/</tt>. Each slash corresponds to
+one newline. Note that each read or write statement by default
+ends with a newline (here Fortran differs from C). </p>
+
+<h3>Some examples</h3>
+
+<p>This piece of Fortran code </p>
+
+<pre>
+      x = 0.025
+      write(*,100) 'x=', x
+  100 format (A,F)
+      write(*,110) 'x=', x
+  110 format (A,F5.3)
+      write(*,120) 'x=', x
+  120 format (A,E)
+      write(*,130) 'x=', x
+  130 format (A,E8.1)
+</pre>
+
+<p>produces the following output when we run it: </p>
+
+<pre>
+x=      0.0250000
+x=0.025
+x=  0.2500000E-01
+x= 0.3E-01
+</pre>
+
+<p>Note how blanks are automatically padded on the left and that
+the default field width for real numbers is usually 14. We see
+that Fortran 77 follows the rounding rule that digits 0-4 are
+rounded downwards while 5-9 are rounded upwards. </p>
+
+<p>In this example each write statement used a different format
+statement. But it is perfectly fine to use the same format
+statement for many different write statements. In fact, this is
+one of the main advantages of using format statements. This
+feature is handy when you print tables for instance, and want
+each row to have the same format. </p>
+
+<h3>Format strings in read/write statements</h3>
+
+<p>Instead of specifying the format code in a separate format
+statement, one can give the format code in the read/write
+statement directly. For example, the statement </p>
+
+<pre> 
+      write (*,'(A, F8.3)') 'The answer is x = ', x
+</pre>
+
+<p>is equivalent to </p>
+
+<pre> 
+      write (*,990) 'The answer is x = ', x
+  990 format (A, F8.3)
+</pre>
+
+<p>Sometimes text strings are given in the format statements,
+e.g. the following version is also equivalent: </p>
+
+<pre> 
+      write (*,999) x
+  999 format ('The answer is x = ', F8.3)
+</pre>
+
+<h3>Implicit loops and repeat counts</h3>
+
+<p>Now let us do a more complicated example. Say you have a
+two-dimensional array of integers and want to print the upper
+left 5 by 10 submatrix with 10 values each on 5 rows. Here is
+how: </p>
+
+<pre>
+      do 10 i = 1, 5
+         write(*,1000) (a(i,j), j=1,10)
+   10 continue
+ 1000 format (I6)
+</pre>
+
+<p>We have an explicit do loop over the rows and an <em>implicit</em>
+loop over the column index j. </p>
+
+<p>Often a format statement involves repetition, for example </p>
+
+<pre>
+  950 format (2X, I3, 2X, I3, 2X, I3, 2X, I3)
+</pre>
+
+<p>There is a shorthand notation for this: </p>
+
+<pre>
+  950 format (4(2X, I3))
+</pre>
+
+<p>It is also possible to allow repetition without explicitly
+stating how many times the format should be repeated. Suppose you
+have a vector where you want to print the first 50 elements, with
+ten elements on each line. Here is one way: </p>
+
+<pre>
+      write(*,1010) (x(i), i=1,50)
+ 1010 format (10I6)
+</pre>
+
+<p>The format statement says ten numbers should be printed. But
+in the write statement we try to print 50 numbers. So after the
+ten first numbers have been printed, the same format statement is
+automatically used for the next ten numbers and so on. </p>
+
+<p>Implicit do-loops can be multi-dimensional and can be used to
+make an read or write statement difficult to understand. You
+should avoid using implicit loops which are much more complicated
+than the ones shown here. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

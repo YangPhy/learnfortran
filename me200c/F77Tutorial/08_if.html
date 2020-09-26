@@ -1,0 +1,82 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>8. The <tt>if</tt> statements </h2>
+
+<p>An important part of any programming language are the <em>conditional
+statements</em>. The most common such statement in Fortran is the
+<tt>if</tt> statement, which actually has several forms. The
+simplest one is the logical <tt>if</tt> statement: </p>
+
+<pre>
+      if (<em>logical expression</em>) <em>executable statement</em>
+</pre>
+
+<p>This has to be written on one line. This example finds the
+absolute value of x: </p>
+
+<pre>
+      if (x .LT. 0) x = -x
+</pre>
+
+<p>If more than one statement should be executed inside the <tt>if</tt>,
+then the following syntax should be used: </p>
+
+<pre>
+      if (<em>logical expression</em>) then
+         <em>statements</em>
+      endif
+</pre>
+
+<p>The most general form of the <tt>if</tt> statement has the
+following form: </p>
+
+<pre>
+      if (<em>logical expression</em>) then
+         <em>statements</em>
+      elseif (<em>logical expression</em>) then
+         <em>statements</em>
+       :
+       :
+      else
+         <em>statements</em>
+      endif
+</pre>
+
+<p>The execution flow is from top to bottom. The conditional
+expressions are evaluated in sequence until one is found to be
+true. Then the associated statements are executed and the control
+resumes after the <tt>endif</tt>. </p>
+
+<h3>Nested <tt>if</tt> statements</h3>
+
+<p><tt>if</tt> statements can be nested in several levels. To
+ensure readability, it is important to use proper indentation.
+Here is an example: </p>
+
+<pre>
+      if (x .GT. 0) then
+         if (x .GE. y) then
+            write(*,*) 'x is positive and x &gt;= y'
+         else
+            write(*,*) 'x is positive but x <y' endif elseif (x .LT. 0) then write(*,*) 'x is negative' else write(*,*) 'x is zero' endif </PRE>
+You should avoid nesting many levels of <tt>if</tt> statements
+since things get hard to follow.
+</pre>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+
+<pre>
+
+</pre>
+</body>
+</html>

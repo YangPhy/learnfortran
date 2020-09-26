@@ -1,0 +1,334 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>13. Extra Stuff</h2>
+
+<p>This lesson just contains some extra material(s) to be
+discussed in the final lecture. The discriptions here are quite
+brief. </p>
+
+<h3>Generic subprograms</h3>
+
+<p>In Fortran 77 many of the intrinsic functions (sin, cos, abs)
+return the same type as they receive as an argument. These are
+known as <em>generic</em> functions. There was no way in Fortran
+77 to do the same for user routines. Here is an example of
+Fortran 90 generic subroutines from <a
+href="http://www.nsc.liu.se/~boein/f77to90/index.html">Fortran 90
+for the Fortran 77 Programmer</a>. This example defines a
+subroutine, SWAP, which works for reals, integers and characters.
+Note that while this example only defines a genereic subroutine,
+generic functions are written in the same way. </p>
+
+<pre>
+MODULE SWAPPER
+       INTERFACE SWAP
+              MODULE PROCEDURE SWAP_R, SWAP_I, SWAP_C
+       END INTERFACE
+CONTAINS
+
+       SUBROUTINE SWAP_R(A, B)
+       IMPLICIT NONE
+       REAL, INTENT (INOUT)      :: A, B
+       REAL                      :: TEMP
+               TEMP = A ; A = B ; B = TEMP
+       END SUBROUTINE SWAP_R
+
+       SUBROUTINE SWAP_I(A, B)
+       IMPLICIT NONE
+       INTEGER, INTENT (INOUT)   :: A, B
+       INTEGER                   :: TEMP
+               TEMP = A ; A = B ; B = TEMP
+       END SUBROUTINE SWAP_I
+
+       SUBROUTINE SWAP_C(A, B)
+       IMPLICIT NONE
+       CHARACTER, INTENT (INOUT) :: A, B
+       CHARACTER                 :: TEMP
+                  TEMP = A ; A = B ; B = TEMP
+       END SUBROUTINE SWAP_C
+END MODULE SWAPPER
+</pre>
+
+<p>Here is a simple program to use the SWAP subroutine: </p>
+
+<pre>
+PROGRAM SWAP_MAIN
+USE SWAPPER
+       IMPLICIT NONE
+       INTEGER                    :: I, J, K, L
+       REAL                       :: A, B, X, Y
+       CHARACTER                  :: C, D, E, F
+
+       I = 1   ;  J = 2         ;     K = 100 ; L = 200
+       A = 7.1 ;  B = 10.9      ;     X = 11.1; Y = 17.0
+       C = 'a' ;  d = 'b'       ;     E = '1' ; F = '&quot;'
+
+       WRITE (*,*) I, J, K, L, A, B, X, Y, C, D, E, F
+       CALL  SWAP (I, J)  ;  CALL SWAP (K, L)
+       CALL  SWAP (A, B)  ;  CALL SWAP (X, Y)
+       CALL  SWAP (C, D)  ;  CALL SWAP (E, F)
+       WRITE (*,*) I, J, K, L, A, B, X, Y, C, D, E, F
+END
+</pre>
+
+<h3>Module procedures and operator overloading</h3>
+
+<p>Here is (long) an example which shows both modules procedures
+and operator overloading. The purpose of this example is to
+define a matrix type so that the following things work as they
+would in Matlab: </p>
+
+<pre>
+     type(matrix), dimension(n,n) :: A, B, C
+     type(matrix), dimension(n) :: x, b
+
+     A = B * C
+     b = A * x
+     x = b / A
+</pre>
+
+<p>A normal array of reals in Fortran 90 would do addition,
+subtraction and assignment correctly. However, it would do
+multiplication and division element-wise as explained in class.
+The module below defines the matrix type and the =, +, -, * and /
+operators for it. Note that the operators are defined in the same
+manner as other generic subprograms. </p>
+
+<pre>
+!       matrix.f90
+!
+!       Module for matrix type and operations
+!       by Paul H. Hargrove
+!       May 13, 1996
+!
+module operator
+
+        type matrix
+          real elem
+        end type matrix
+
+        interface assignment(=)
+          module procedure matrix_from_real, matrix_from_matrix, &amp;
+                           vector_from_real, vector_from_vector
+        end interface
+                
+        interface operator(+)
+          module procedure matrix_add, vector_add
+        end interface
+
+        interface operator(-)
+          module procedure matrix_sub, vector_sub
+        end interface
+
+        interface operator(*)
+          module procedure matrix_mul, vector_mul, matrix_vector_mul
+        end interface
+
+        interface operator(/)
+          module procedure matrix_div, matrix_vector_div
+        end interface
+
+contains
+
+        !
+        ! ASSIGNMENT OPERATORS: X = Y
+        !
+
+        subroutine matrix_from_real(X, Y)
+        ! copy a 2D array of reals to a 2D array of type matrix
+          real, intent(in), dimension(:,:) :: Y
+          type(matrix), intent(out), dimension(size(Y,1),size(Y,2)) :: X
+
+          X(:,:)%elem = Y(:,:)
+        end subroutine matrix_from_real
+
+        subroutine matrix_from_matrix(X, Y)
+        ! copy a 2D array of type matrix
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(out), dimension(size(Y,1),size(Y,2)) :: X
+
+          X(:,:)%elem = Y(:,:)%elem
+        end subroutine matrix_from_matrix
+
+        subroutine vector_from_real(X, Y)
+        ! copy a 1D array of reals to a 1D array of type matrix
+          real, intent(in), dimension(:) :: Y
+          type(matrix), intent(out), dimension(size(Y,1)) :: X
+
+          X(:)%elem = Y(:)
+        end subroutine vector_from_real
+
+        subroutine vector_from_vector(X, Y)
+        ! copy a 1D array of type matrix
+          type(matrix), intent(in), dimension(:) :: Y
+          type(matrix), intent(out), dimension(size(Y,1)) :: X
+
+          X(:)%elem = Y(:)%elem
+        end subroutine vector_from_vector
+
+        !
+        ! ADDITION OPERATORS: X = Y + Z
+        !
+
+        function matrix_add(Y, Z) result(X)
+        ! add 2D arrays of type matrix
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(in), dimension(size(Y,1),size(Y,2)) :: Z
+          type(matrix), dimension(size(Y,1),size(Y,2)) :: X
+
+          X(:,:)%elem = Y(:,:)%elem + Z(:,:)%elem
+        end function matrix_add
+
+        function vector_add(Y, Z) result(X)
+        ! add 1D arrays of type matrix
+          type(matrix), intent(in), dimension(:) :: Y
+          type(matrix), intent(in), dimension(size(Y,1)) :: Z
+          type(matrix), dimension(size(Y,1)) :: X
+
+          X(:)%elem = Y(:)%elem + Z(:)%elem
+        end function vector_add
+
+        !
+        ! SUBTRACTION OPERATORS: X = Y - Z
+        !
+
+        function matrix_sub(Y, Z) result(X)
+        ! subtract 2D arrays of type matrix
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(in), dimension(size(Y,1),size(Y,2)) :: Z
+          type(matrix), dimension(size(Y,1),size(Y,2)) :: X
+
+          X(:,:)%elem = Y(:,:)%elem - Z(:,:)%elem
+        end function matrix_sub
+
+        function vector_sub(Y, Z) result(X)
+        ! subtract 1D arrays of type matrix
+          type(matrix), intent(in), dimension(:) :: Y
+          type(matrix), intent(in), dimension(size(Y,1)) :: Z
+          type(matrix), dimension(size(Y,1)) :: X
+
+          X(:)%elem = Y(:)%elem - Z(:)%elem
+        end function vector_sub
+
+        !
+        ! MULTIPLICATION OPERATORS: X = Y * Z
+        !
+
+        function matrix_mul(Y, Z) result(X)
+        ! multiply 2D arrays of type matrix
+        ! NOTE: NAG's F90 demo won't deal w/ &quot;half constrained&quot; dimensions
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(in), dimension(:,:) :: Z
+          type(matrix), dimension(size(Y,1),size(Z,2)) :: X
+
+          X(:,:)%elem = MATMUL(Y(:,:)%elem, Z(:,:)%elem)
+        end function matrix_mul
+
+        function vector_mul(Y, Z) result(X)
+        ! multiply 1D arrays of type matrix
+          type(matrix), intent(in), dimension(:) :: Y
+          type(matrix), intent(in), dimension(size(Y,1)) :: Z
+          real X
+
+          X = DOTPRODUCT(Y(:)%elem, Z(:)%elem)
+        end function vector_mul
+
+        function matrix_vector_mul(Y, Z) result(X)
+        ! multiply 2D array times 1D array of type matrix
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(in), dimension(size(Y,2)) :: Z
+          type(matrix), dimension(size(Y,1)) :: X
+
+          X(:)%elem = MATMUL(Y(:,:)%elem, Z(:)%elem)
+        end function matrix_vector_mul
+
+        !
+        ! DIVISION OPERATORS: X = Y/Z = INV(Z) * Y
+        !
+
+        function matrix_div(Y, Z) result(X)
+        ! &quot;divide&quot; 2D arrays of type matrix
+          type(matrix), intent(in), dimension(:,:) :: Y
+          type(matrix), intent(in), dimension(:,:) :: Z
+          type(matrix), dimension(size(Y,1),size(Y,2)) :: X
+          real, dimension(size(Z,1),size(Z,2)) :: W
+          integer i, j, k, n
+        
+        ! copy arguments so they aren't modified
+          W(:,:) = Z(:,:)%elem
+          X(:,:)%elem = Y(:,:)%elem
+
+        ! perform Gauss elimination on augmented matrix (W|X)
+          n = size(Z,2)
+          do k = 1,n-1
+            do i=k+1,n
+              W(i,k) = W(i,k)/W(k,k)
+              X(i,:)%elem = X(i,:)%elem - W(i,k) * X(k,:)%elem
+            end do
+            do j=k+1,n
+              do i=k+1,n
+                W(i,j) = W(i,j) - W(i,k) * W(k,j)
+              end do
+            end do
+          end do
+
+        ! perform back substitution on X
+          do k = n,1,-1
+            X(k,:)%elem = X(k,:)%elem / W(k,k)
+            do i=1,k-1
+              X(i,:)%elem = X(i,:)%elem - W(i,k) * X(k,:)%elem
+            end do
+          end do
+        end function matrix_div
+
+        function matrix_vector_div(Y, Z) result(X)
+        ! &quot;divide&quot; 1D array by 2D array of type matrix
+          type(matrix), intent(in), dimension(:) :: Y
+          type(matrix), intent(in), dimension(:,:) :: Z
+          type(matrix), dimension(size(Y,1)) :: X
+          real, dimension(size(Z,1),size(Z,2)) :: W
+          integer i, j, k, n
+        
+        ! copy arguments so they aren't modified
+          W(:,:) = Z(:,:)%elem
+          X(:)%elem = Y(:)%elem
+
+        ! perform Gauss elimination on augmented matrix (W|X)
+          n = size(Z,2)
+          do k = 1,n-1
+            do i=k+1,n
+              W(i,k) = W(i,k)/W(k,k)
+              X(i)%elem = X(i)%elem - W(i,k) * X(k)%elem
+            end do
+            do j=k+1,n
+              do i=k+1,n
+                W(i,j) = W(i,j) - W(i,k) * W(k,j)
+              end do
+            end do
+          end do
+
+        ! perform back substitution on X
+          do k = n,1,-1
+            X(k)%elem = X(k)%elem / W(k,k)
+            do i=1,k-1
+              X(i)%elem = X(i)%elem - W(i,k) * X(k)%elem
+            end do
+          end do
+        end function matrix_vector_div
+
+end module operator
+</pre>
+
+<p><em>Copyright © 1998 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

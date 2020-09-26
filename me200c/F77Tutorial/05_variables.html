@@ -1,0 +1,128 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>5. Variables, types, and declarations</h2>
+
+<h3>Variable names</h3>
+
+<p>Variable names in Fortran consist of 1-6 characters chosen
+from the letters <tt>a-z</tt> and the digits <tt>0-9</tt>. The
+first character must be a letter. Fortran 77 does not distinguish
+between upper and lower case, in fact, it assumes all input is
+upper case. However, nearly all Fortran 77 compilers will accept
+lower case. If you should ever encounter a Fortran 77 compiler
+that insists on upper case it is usually easy to convert the
+source code to all upper case. </p>
+
+<p>The words which make up the Fortran language are called <em>reserved
+words</em> and cannot be used as names of variable. Some of the
+reserved words which we have seen so far are &quot;program&quot;,
+&quot;real&quot;, &quot;stop&quot; and &quot;end&quot;. </p>
+
+<h3>Types and declarations</h3>
+
+<p>Every variable <em>should</em> be defined in a <em>declaration</em>.
+This establishes the <em>type</em> of the variable. The most
+common declarations are: </p>
+
+<pre>
+      integer   <em>list of variables</em>
+      real      <em>list of variables</em>
+      double precision  <em>list of variables</em>
+      complex   <em>list of variables</em>
+      logical   <em>list of variables</em>
+      character <em>list of variables</em>
+</pre>
+
+<p>The <em>list of variables</em> should consist of variable
+names separated by commas. Each variable should be declared
+exactly once. If a variable is undeclared, Fortran 77 uses a set
+of <em>implicit rules</em> to establish the type. This means all
+variables starting with the letters <tt>i-n</tt> are integers and
+all others are real. Many old Fortran 77 programs uses these
+implicit rules, but <em>you should not!</em> The probability of
+errors in your program grows dramatically if you do not
+consistently declare your variables. </p>
+
+<h3>Integers and floating point variables</h3>
+
+<p>Fortran 77 has only one type for integer variables. Integers
+are usually stored as 32 bits (4 bytes) variables. Therefore, all
+integer variables should take on values in the range [-m,m] where
+m is approximately 2*10^9. </p>
+
+<p>Fortran 77 has two different types for floating point
+variables, called <tt>real</tt> and <tt>double precision</tt>.
+While <tt>real</tt> is often adequate, some numerical
+calculations need very high precision and <tt>double precision</tt>
+should be used. Usually a real is a 4 byte variable and the
+double precision is 8 bytes, but this is machine dependent. Some
+non-standard Fortran versions use the syntax <tt>real*8</tt> to
+denote 8 byte floating point variables. </p>
+
+<h3>The <tt>parameter</tt> statement</h3>
+
+<p>Some constants appear many times in a program. It is then
+often desirable to define them only once, in the beginning of the
+program. This is what the <tt>parameter</tt> statement is for. It
+also makes programs more readable. For example, the circle area
+program should rather have been written like this: </p>
+
+<pre>
+      program circle
+      real r, area, pi
+      parameter (pi = 3.14159)
+ 
+c This program reads a real number r and prints
+c the area of a circle with radius r.
+ 
+      write (*,*) 'Give radius r:'
+      read  (*,*) r
+      area = pi*r*r
+      write (*,*) 'Area = ', area
+ 
+      stop
+      end
+</pre>
+
+<p>The syntax of the parameter statement is </p>
+
+<pre>
+      parameter (<em>name = constant, ... , name = constant</em>)
+</pre>
+
+<p>The rules for the <tt>parameter</tt> statement are: </p>
+
+<ul>
+    <li>The <em>name</em> defined in the <tt>parameter</tt>
+        statement is not a variable but rather a constant. (You
+        cannot change its value at a later point in the program.)
+    </li>
+    <li>A <em>name</em> can appear in at most one <tt>parameter</tt>
+        statement. </li>
+    <li>The <tt>parameter</tt> statement(s) must come before the
+        first executable statement. </li>
+</ul>
+
+<p>Some good reasons to use the <tt>parameter</tt> statement are:
+</p>
+
+<ul>
+    <li>It helps reduce the number of typos. </li>
+    <li>It makes it easier to change a constant that appears many
+        times in a program. </li>
+    <li>It increases the readability of your program. </li>
+</ul>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

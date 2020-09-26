@@ -1,0 +1,84 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>19. Fortran programming style</h2>
+
+<p>There are many different programming styles, but here are some
+general guidelines that are fairly non-controversial. </p>
+
+<h4>Portability</h4>
+
+<p>To ensure portability, use only standard Fortran 77. The only
+exception we have allowed in this tutorial is to use lower case
+letters. </p>
+
+<h4>Program structure </h4>
+
+<p>The overall program structure should be modular. Each
+subprogram should solve a well-defined task. Many people prefer
+to write each subprogram in a separate file. </p>
+
+<h4>Comments</h4>
+
+<p>Write legible code, but also add comments in the source
+explaining what is happening! It is especially important to have
+a good header for each subprogram that explains each input/output
+argument and what the subprogram does. </p>
+
+<h4>Indentation</h4>
+
+<p>Always use proper indentation for loops and if blocks as
+demonstrated in this tutorial. </p>
+
+<h4>Variables</h4>
+
+<p>Always declare all variables. Implicit type declaration is
+bad! Try to stick to maximum 6 characters for variable names, or
+at the very least make sure the 6 first characters are unique. </p>
+
+<h4>Subprograms</h4>
+
+<p>Never let functions have &quot;side effects&quot;, i.e. do not
+change the value of the input parameters. Use subroutines in such
+cases. </p>
+
+<p>In the declarations, separate parameters, common blocks, and
+local variables. </p>
+
+<p>Minimize the use of common blocks. </p>
+
+<h4>Goto</h4>
+
+<p>Minimize the use of <em>goto</em>. Unfortunately it is
+necessary to use <em>goto</em> in some loops since <em>while</em>
+is not standard Fortran. </p>
+
+<h4>Arrays</h4>
+
+<p>In many cases it is best to declare all large arrays in the
+main program and then pass them as arguments to the various
+subroutines. This way all the space allocation is done in one
+place. Remember to pass the leading dimensions. Avoid unnecessary
+&quot;reshaping&quot; of matrices. </p>
+
+<h4>Efficiency concerns</h4>
+
+<p>When you have a double loop accessing a two-dimensional array,
+it is usually best to have the first (row) index in the innermost
+loop. This is because of the storage scheme in Fortran. </p>
+
+<p>When you have if-then-elseif statements with multiple
+conditions, try to place the most likely conditions first. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

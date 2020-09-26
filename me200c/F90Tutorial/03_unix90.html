@@ -1,0 +1,72 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>3. How to use Fortran 90 on the Unix Computers at Stanford </h2>
+
+<h3>Practical Details</h3>
+
+<p>Unfortunately, the Fortran 90 compiler that resides on the Sun
+computers in the leland system is unreliable. However, there is
+no alternative at this time. If you think you're program should
+compile but it won't, then it might not be your fault. See the
+instructor if you think the compiler is misbehaving. </p>
+
+<h3>Compiling, linking, and executing</h3>
+
+<p>In virtually the same manner in which we compiled our Fortran
+77 routines, we can process our Fortran 90 programs. To compile
+and link a Fortran 90 source code with the name <em>main.f90</em>,
+simply type </p>
+
+<pre>
+f90 main.f90
+</pre>
+
+<p>This will create an executable file called <em>a.out</em>. </p>
+
+<p>Fortran 90 programs which make use of the free format form (to
+be explained in the next section) must have an extension <em>.f90</em>.
+</p>
+
+<p>Just as with the Fortran 77 compiler, we are able to specify
+the name of our executable file with the Fortran90 compiler by
+specifying the -o option: </p>
+
+<pre>
+f90 main.f90 -o main.out 
+</pre>
+
+<p>This will create an executable file called <em>main.out</em>. </p>
+
+<p>Similarly, we can link to a Fortran 90 compiled library (such
+as the BLAS/LAPACK library in the class account) by </p>
+
+<pre>
+f90 main.f90 -L/usr/class/me390/lib -lmy_lib90
+</pre>
+
+<p>This will link your program <em>main.f90</em> to the compiled
+library called <em>libmy_lib90.a</em> which resides on the class
+account in the directory <em>/usr/class/me390/lib</em>. You may
+copy this library file to your own account if you wish. However,
+the file is rather large and may cause you to exceed your disk
+quota on the leland system. A better approach would be to simply
+compile your programs requiring the BLAS/LAPACK library using the
+command given above. </p>
+
+<p>Note: the library libmy_lib90.a MUST have been created using
+the Fortran 90 compiler. Attempts to link a Fortran 90 program to
+a Fortran 77 library will fail. </p>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>4. How to use Fortran on the Unix computers at Stanford</h2>
+
+<h3>Practical details</h3>
+
+<p>For the course ME390 you will need an account on the <em>leland</em>
+computers. If you don't have one, you should go over to the
+consultants' desk on the second floor of Sweet Hall and open an
+account ASAP. </p>
+
+<p>In this class, we will be using Fortran under the Unix
+operating system. If you have no previous experience with Unix,
+you will have to learn the basics on your own. The consultants at
+Sweet Hall have some brochures that can be useful. There is also
+a class taught in the CS department that gives an introduction to
+Unix. </p>
+
+<p>You can use any Unix workstation that has a Fortran 77
+compiler. We recommend that you use one of the Sun workstations,
+so you should log onto one of the &quot;elaine&quot;,
+&quot;epic&quot;, &quot;adelbert&quot; or &quot;saga&quot;
+machines. </p>
+
+<h3>Source code, object code, compiling, and linking</h3>
+
+<p>A Fortran program consists of plain text that follows certain
+rules (syntax). This is called the <em>source code</em>. You need
+to use an <em>editor</em> to write (edit) the source code. The
+most common editors in Unix are emacs and vi, but these can be a
+bit tricky for novice users. You may want to use a simpler
+editor, like xedit which runs under X-windows. </p>
+
+<p>When you have written a Fortran program, you should save it in
+a file that has the extension <em>.f</em> or <em>.for</em>.
+Before you can execute the program, you have translate the
+program into machine readable form. This is done by a special
+program called a <em>compiler</em>. The Fortran 77 compilers are
+usually called <em>f77</em>. The output from the compilation is
+given the somewhat cryptic name <em>a.out</em> by default, but
+you can choose another name if you wish. To run the program,
+simply type the name of the executable file, for example <em>a.out</em>.
+(This explanation is a bit oversimplified. Really the compiler
+translates source code into <em>object code</em> and the
+linker/loader makes this into an <em>executable</em>.) </p>
+
+<h4>Examples:</h4>
+
+<p>In the class directory there is a small Fortran program called
+<em>circle.f</em>. You can compile and run it by following these
+steps: </p>
+
+<pre>
+    cp /usr/class/me390/circle*.f .
+    f77 circle.f
+    a.out
+</pre>
+
+<p>(Note that there are several dots (periods) there which can be
+easy to miss!) If you need to have several executables at the
+same time, it is a good idea to give the executables descriptive
+names. This can be accomplished using the -o option. For example,
+</p>
+
+<pre>
+    f77 circle.f -o circle.out
+</pre>
+
+<p>will compile the file circle.f and save the executable in the
+file <em>circle.out</em>. Please note that object codes and
+executables take a lot of disk space, so you should delete them
+when you are not using them. (The remove command in Unix is <em>rm</em>.)
+</p>
+
+<p>In the previous examples, we have not distinguished between <em>compiling</em>
+and <em>linking</em>. These are two different processes but the
+Fortran compiler performs them both, so the user usually does not
+need to know about it. But in the next example we will use <em>two</em>
+source code files. </p>
+
+<pre>
+    f77 circle1.f circle2.f
+</pre>
+
+<p>This will generate <em>three</em> files, the two object code
+files <em>circle1.o</em> and <em>circle2.o</em>, plus the
+executable file <em>a.out</em>. What really happened here, is
+that the Fortran compiler first compiled each of the source code
+files into object files (ending in .o) and then linked the two
+object files together into the executable <em>a.out</em>. You can
+separate these two step by using the -c option to tell the
+compiler to only compile the source files: </p>
+
+<pre>
+    f77 -c circle1.f circle2.f
+    f77 circle1.o circle2.o
+</pre>
+
+<p>Compiling separate files like this may be useful if there are
+many files and only a few of them needs to be recompiled. In Unix
+there is a useful command called <em>make</em> which is usually
+used to handle large software packages with many source files.
+These packages come with a <em>makefile</em> and all the user has
+to do is to type <em>make</em>. Writing makefiles is a bit
+complicated so we will not discuss this in this tutorial. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

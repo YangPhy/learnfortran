@@ -1,0 +1,214 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>7. Arrays </h2>
+
+<h3>One-dimensional Arrays </h3>
+
+<ul>
+    <li>The dimension of an array may be specified by a type
+        specification statement of the form: <pre>
+   REAL, DIMENSION(10) :: A, B
+   INTEGER, DIMENSION(0:9) :: C
+</pre>
+        <p>Here, the three arrays A, B, and C have each been
+        dimensioned with 10 storage slots. The index of the real
+        arrays A and B start at 1 while the index for the integer
+        array C starts at 0. </p>
+    </li>
+    <li>The value of the individual array elements of the array A
+        may be initialized to the values 1, 2, 3, ..., 10 by
+        either of the two methods: <pre>
+   A = (/ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 /)
+</pre>
+        <p>or, </p>
+        <pre>
+   A = (/ (I, I = 1, 10) /)
+</pre>
+    </li>
+    <li>The assignment of the values of one array to another is
+        allowed provided that both arrays in question have the
+        same physical dimension. For example, <pre>
+   B = A
+</pre>
+        <p>assigns the previously determined values of the
+        elements of the A array to the array B. </p>
+    </li>
+    <li>Operators and functions normally applied to simple
+        expressions may also be applied to arrays having the same
+        number of elements. Such operations are carried out on an
+        element by element basis. For example, <pre>
+   A = A + B
+   C = 2*C
+</pre>
+        <p>assigns the ith element of A the value of the sum of
+        the ith elements of arrays A and B. Similarly, the ith
+        element of C is assigned the value equal to the ith
+        element of itself multiplied by 2. </p>
+    </li>
+    <li>A WHERE construct may be used to assign values to the
+        individual elements of an array with <pre>
+   WHERE (<em>logical argument</em>)
+      <em>sequence of array assignments</em>
+   ELSEWHERE
+      <em>sequence of array assignments</em>
+   END WHERE
+</pre>
+        <p>For example, if A is assigned the values </p>
+        <pre>
+   A = (/ (I, I = 1,10) /)
+</pre>
+        <p>then, we may consider assigning the elements of the
+        array B as </p>
+        <pre>
+   WHERE (A &gt; 5)
+      B = 1.
+   ELSEWHERE
+      B = 0.
+   END WHERE
+</pre>
+        <p>This assigns to B the values 0, 0, 0, 0, 0, 1, 1, 1,
+        1, 1. </p>
+    </li>
+    <li>Several intrinsic array-type functions are available for
+        processing arrays. Some of these include <pre>
+   DOT_PRODUCT(A, B):	returns the dot product of A and B
+   MAXVAL(A):		returns the maximum value in array A 
+   MAXLOC(A):		returns a one-element 1D array whose value is
+			the location of the first occurrence of the 
+			maximum value in A
+   PRODUCT(A):		returns the product of the elements of A
+   SUM(A):		returns the sum of the elements of A
+</pre>
+    </li>
+    <li>An array may be <em>allocatable</em>, i.e., it may be
+        assigned memory storage during execution. To declare a
+        real allocatable array A, do <pre>
+   REAL, DIMENSION(:), ALLOCATABLE :: A
+</pre>
+        <p>At run time, the actual bounds for the array A may be
+        determined by the statement </p>
+        <pre>
+   ALLOCATE ( A(N) )
+</pre>
+        <p>where N is an integer variable that has been
+        previously assigned. To ensure that enough memory is
+        available to allocate space for your array, make use of
+        the STAT option of the ALLOCATE command: </p>
+        <pre>
+   ALLOCATE ( A(N), STAT = AllocateStatus)
+   IF (AllocateStatus /= 0) STOP &quot;*** Not enough memory ***&quot;
+</pre>
+        <p>Here, AllocateStatus is an integer variable.
+        AllocateStatus takes the value 0 if allocation is
+        successful or some other machine dependent value of there
+        is insufficient memory. </p>
+        <p>An array can be released from memory by using the
+        DEALLOCATE command </p>
+        <pre>
+   DEALLOCATE (A, STAT = DeAllocateStatus)
+</pre>
+        <p>Again, DeAllocateStatus is an integer variable whose
+        value is 0 if the deallocation was successful. </p>
+    </li>
+</ul>
+
+<h3>Multi-dimensional arrays </h3>
+
+<ul>
+    <li>Multi-dimensional arrays can be dimensioned with
+        statements like <pre>
+   REAL, DIMENSION(2,3) :: A
+   REAL, DIMENSION(0:1,0:2) :: B
+   INTEGER, DIMENSION(10,20,3) :: I
+</pre>
+        <p>The maximum limit on the rank (the number of
+        dimensions) of an array is 7. </p>
+    </li>
+    <li>The values of the elements of a multi-dimensional array
+        may be assigned in a manner similar to that for the
+        one-dimensional variety. For instance, the values 1, 2,
+        3, 4, 5, 6 may be assigned to the two-dimensional array A
+        by <pre>
+   A = (/ 1, 2, 3, 4, 5, 6 /)
+</pre>
+        <p>This assigns the values of the A array in column order
+        similar to the rules of Fortran 77. </p>
+    </li>
+    <li>The assignment of the values of one array to another is
+        allowed provided that both arrays in question have the
+        same physical dimension. For example, <pre>
+   B = A
+</pre>
+        <p>assigns the previously determined values of the
+        elements of the A array to the array B. </p>
+    </li>
+    <li>Just like with one-dimensional arrays, operators and
+        functions normally applied to simple expressions may also
+        be applied to multi-dimensional arrays having the same
+        number of elements. Such operations are carried out on an
+        element by element basis. </li>
+    <li>A WHERE construct may be used to assign values to the
+        individual elements of an array with <pre>
+   WHERE (<em>logical argument</em>)
+      <em>sequence of array assignments</em>
+   ELSEWHERE
+      <em>sequence of array assignments</em>
+   END WHERE
+</pre>
+    </li>
+    <li>Several intrinsic array-type functions are available for
+        processing multi-dimensional arrays. Some of the more
+        useful ones are <pre>
+   MAXVAL(A, D):	returns an array of one less dimension than A
+			containing the maximum values of A along
+			dimension D (if D is omitted, returns the
+			maximum value in the entire array)
+   MAXLOC(A):		returns a one-element 1D array whose value is
+			the location of the first occurrence of the 
+			maximum value in A
+   SUM(A, D):		returns an array of one less dimension than A
+			containing the sums of the elements of A along
+			dimension D (if D is omitted, returns sum of the
+			elements in the entire array)
+   MATMUL(A, B):	returns the matrix product of A and B
+   TRANSPOSE(A):	returns the transpose of the 2D array A
+</pre>
+    </li>
+    <li>An array may be <em>allocatable</em>, i.e., it may be
+        assigned memory storage during execution. To declare a
+        real allocatable array A, do <pre>
+   REAL, DIMENSION(:, :), ALLOCATABLE :: A
+</pre>
+        <p>At run time, the actual bounds for the array A may be
+        determined by the statements </p>
+        <pre>
+   ALLOCATE ( A(N, N), STAT = AllocateStatus)
+   IF (AllocateStatus /= 0) STOP &quot;*** Not enough memory ***&quot;
+</pre>
+        <p>Here, N and AllocateStatus are integer variables.
+        AllocateStatus takes the value 0 if allocation is
+        successful or some other machine dependent value of there
+        is insufficient memory. </p>
+        <p>An array can be released from memory by using the
+        DEALLOCATE command </p>
+        <pre>
+   DEALLOCATE (A, STAT = DeAllocateStatus)
+</pre>
+        <p>Again, DeAllocateStatus is an integer variable whose
+        value is 0 if the deallocation was successful. </p>
+    </li>
+</ul>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

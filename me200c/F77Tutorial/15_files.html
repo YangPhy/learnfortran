@@ -1,0 +1,150 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>15. File I/O</h2>
+
+<p>So far we have assumed that the input/output has been to the
+standard input or the standard output. It is also possible to
+read from or write to <em>files</em> which are stored on some
+external storage device, typically a disk (hard disk, floppy) or
+a tape. In Fortran each file is associated with a <em>unit number</em>,
+an integer between 1 and 99. Some unit numbers are reserved: 5 is
+standard input, 6 is standard output. </p>
+
+<h3>Opening and closing a file</h3>
+
+<p>Before you can use a file you have to <em>open</em> it. The
+command is </p>
+
+<pre>
+    open <em>(list-of-specifiers)</em>
+</pre>
+
+<p>where the most common specifiers are: </p>
+
+<pre>
+    [UNIT=]  <em>u</em>
+    IOSTAT=  <em>ios</em>
+    ERR=     <em>err</em>
+    FILE=    <em>fname</em>
+    STATUS=  <em>sta</em>
+    ACCESS=  <em>acc</em>
+    FORM=    <em>frm</em>
+    RECL=    <em>rl</em>
+</pre>
+
+<p>The unit number <em>u</em> is a number in the range 1-99 that
+denotes this file (the programmer may chose any number but he/she
+has to make sure it is unique). </p>
+
+<p><em>ios</em> is the I/O status identifier and should be an
+integer variable. Upon return, <em>ios</em> is zero if the
+statement was successful and returns a non-zero value otherwise. </p>
+
+<p><em>err</em> is a label which the program will jump to if
+there is an error. </p>
+
+<p><em>fname</em> is a character string denoting the file name. </p>
+
+<p><em>sta</em> is a character string that has to be either NEW,
+OLD or SCRATCH. It shows the prior status of the file. A scratch
+file is a file that is created when opened and deleted when
+closed (or the program ends). </p>
+
+<p><em>acc</em> must be either SEQUENTIAL or DIRECT. The default
+is SEQUENTIAL. </p>
+
+<p><em>frm</em> must be either FORMATTED or UNFORMATTED. The
+default is UNFORMATTED. </p>
+
+<p><em>rl</em> specifies the length of each record in a
+direct-access file. </p>
+
+<p>For more details on these specifiers, see a good Fortran 77
+book. </p>
+
+<p>After a file has been opened, you can access it by read and
+write statements. When you are done with the file, it should be
+closed by the statement </p>
+
+<pre>
+      close ([UNIT=]<em>u</em>[,IOSTAT=<em>ios</em>,ERR=<em>err</em>,STATUS=<em>sta</em>])
+</pre>
+
+<p>where, as usual, the parameters in brackets are optional. </p>
+
+<p>In this case <em>sta</em> is a character string which can be
+KEEP (the default) or DELETE. </p>
+
+<h3>Read and write revisited</h3>
+
+<p>The only necessary change from our previous simplified
+read/write statements, is that the unit number must be specified.
+But frequently one wants to add more specifiers. Here is how: </p>
+
+<pre>
+      read ([UNIT=]<em>u</em>, [FMT=]<em>fmt</em>, IOSTAT=<em>ios</em>, ERR=<em>err</em>, END=<em>s</em>)
+      write([UNIT=]<em>u</em>, [FMT=]<em>fmt</em>, IOSTAT=<em>ios</em>, ERR=<em>err</em>, END=<em>s</em>)
+</pre>
+
+<p>where most of the specifiers have been described above. The
+END=s specifier defines which statement label the program jumps
+to if it reaches end-of-file. </p>
+
+<h3>Example</h3>
+
+<p>You are given a data file with xyz coordinates for a bunch of
+points. The number of points is given on the first line. The file
+name of the data file is <em>points.dat</em>. The format for each
+coordinate is known to be F10.4 (We'll learn about FORMAT
+statements in a later lesson). Here is a short program that reads
+the data into 3 arrays x,y,z: </p>
+
+<pre>
+      program inpdat
+c
+c  This program reads n points from a data file and stores them in 
+c  3 arrays x, y, z.
+c
+      integer nmax, u
+      parameter (nmax=1000, u=20)
+      real x(nmax), y(nmax), z(nmax)
+
+c  Open the data file
+      open (u, FILE='points.dat', STATUS='OLD')
+
+c  Read the number of points
+      read(u,*) n
+      if (n.GT.nmax) then
+         write(*,*) 'Error: n = ', n, 'is larger than nmax =', nmax
+         goto 9999
+      endif
+
+c  Loop over the data points
+      do 10 i= 1, n
+         read(u,100) x(i), y(i), z(i)
+   10 enddo
+  100 format (3(F10.4))
+
+c  Close the file
+      close (u)
+
+c  Now we should process the data somehow...
+c  (missing part)
+
+ 9999 stop
+      end
+</pre>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

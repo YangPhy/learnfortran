@@ -1,0 +1,128 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>16. Simple I/O</h2>
+
+<p>An important part of any computer program is to handle input
+and output. In our examples so far, we have already used the two
+most common Fortran constructs for this: <tt>read</tt> and <tt>write</tt>.
+Fortran I/O can be quite complicated, so we will only describe
+some simpler cases in this tutorial. </p>
+
+<h3>Read and write</h3>
+
+<p><tt>Read</tt> is used for input, while <tt>write</tt> is used
+for output. A simple form is </p>
+
+<pre>
+      read (<em>unit no, format no</em>) <em>list-of-variables</em>
+      write(<em>unit no, format no</em>) <em>list-of-variables</em>
+</pre>
+
+<p>The unit number can refer to either standard input, standard
+output, or a file. The format number refers to a label for a
+format statement, which will be described in the next lesson. </p>
+
+<p>It is possible to simplify these statements further by using
+asterisks (*) for some arguments, like we have done in most of
+our examples so far. This is sometimes called <em>list directed</em>
+read/write. </p>
+
+<pre>
+      read (*,*) <em>list-of-variables</em>
+      write(*,*) <em>list-of-variables</em>
+</pre>
+
+<p>The first statement will read values from the standard input
+and assign the values to the variables in the variable list,
+while the second one writes to the standard output. </p>
+
+<h3>Examples</h3>
+
+<p>Here is a code segment from a Fortran program: </p>
+
+<pre>
+      integer m, n
+      real x, y, z(10)
+
+      read(*,*) m, n 
+      read(*,*) x, y
+      read(*,*) z
+</pre>
+
+<p>We give the input through standard input (possibly through a
+data file directed to standard input). A data file consists of <em>records</em>
+according to traditional Fortran terminology. In our example,
+each record contains a number (either integer or real). Records
+are separated by either blanks or commas. Hence a legal input to
+the program above would be: </p>
+
+<pre>
+   -1  100
+  -1.0 1e+2
+  1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0
+</pre>
+
+<p>Or, we could add commas as separators: </p>
+
+<pre>
+   -1, 100
+ -1.0, 1e+2
+  1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0
+</pre>
+
+<p>Note that Fortran 77 input is line sensitive, so it is
+important not to have extra input elements (fields) on a line
+(record). For example, if we gave the first four inputs all on
+one line as </p>
+
+<pre>
+   -1, 100, -1.0, 1e+2
+  1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0
+</pre>
+
+<p>then m and n would be assigned the values -1 and 100
+respectively, but the last two values would be discarded, x and y
+would be assigned the values 1.0 and 2.0, ignoring the rest of
+the second line. This would leave the elements of z all
+undefined. </p>
+
+<p>If there are too few inputs on a line then the next line will
+be read. For example </p>
+
+<pre>
+   -1
+  100
+ -1.0
+ 1e+2
+  1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0
+</pre>
+
+<p>would produce the same results as the first two examples. </p>
+
+<h3>Other versions</h3>
+
+<p>For simple list-directed I/O it is possible to use the
+alternate syntax </p>
+
+<pre>
+      read  *, <em>list-of-variables</em>
+      print *, <em>list-of-variables</em>
+</pre>
+
+<p>which has the same meaning as the list-directed read and write
+statements described earlier. This version always reads/writes to
+standard input/output so the * corresponds to the format. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

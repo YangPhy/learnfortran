@@ -1,0 +1,203 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>18.1 BLAS</h2>
+
+<p>BLAS is an acronym for Basic Linear Algebra Subroutines. As
+the name indicates, it contains subprograms for basic operations
+on vectors and matrices. BLAS was designed to be used as a
+building block in other codes, for example LAPACK. The source
+code for BLAS is available through Netlib. However, many computer
+vendors will have a special version of BLAS tuned for maximal
+speed and efficiency on their computer. This is one of the main
+advantages of BLAS: the calling sequences are standardized so
+that programs that call BLAS will work on any computer that has
+BLAS installed. If you have a fast version of BLAS, you will also
+get high performance on all programs that call BLAS. Hence BLAS
+provides a simple and portable way to achieve high performance
+for calculations involving linear algebra. LAPACK is a
+higher-level package built on the same ideas. </p>
+
+<h3>Levels and naming conventions</h3>
+
+<p>The BLAS subroutines can be divided into three <em>levels</em>:
+</p>
+
+<ul>
+    <li><strong>Level 1:</strong> Vector-vector operations. <em>O(n)</em>
+        data and <em>O(n)</em> work. </li>
+    <li><strong>Level 2:</strong> Matrix-vector operations. <em>O(n^2)</em>
+        data and <em>O(n^2)</em> work. </li>
+    <li><strong>Level 3:</strong> Matrix-matrix operations. <em>O(n^2)</em>
+        data and <em>O(n^3)</em> work. </li>
+</ul>
+
+<p>Each BLAS and LAPACK routine comes in several versions, one
+for each precision (data type). The first letter of the
+subprogram name indicates the precision used: </p>
+
+<pre>
+      S      Real single precision.
+      D      Real double precision.
+      C      Complex single precision.
+      Z      Complex double precision.
+</pre>
+
+<p>Complex double precision is not strictly defined in Fortran
+77, but most compilers will accept one of the following
+declarations: </p>
+
+<pre>
+      double complex <em>list-of-variables</em>
+      complex*16     <em>list-of-variables</em>
+</pre>
+
+<h3>BLAS 1</h3>
+
+<p>Some of the BLAS 1 subprograms are: </p>
+
+<ul>
+    <li>xCOPY - copy one vector to another </li>
+    <li>xSWAP - swap two vectors </li>
+    <li>xSCAL - scale a vector by a constant </li>
+    <li>xAXPY - add a multiple of one vector to another </li>
+    <li>xDOT - inner product </li>
+    <li>xASUM - 1-norm of a vector </li>
+    <li>xNRM2 - 2-norm of a vector </li>
+    <li>IxAMAX - find maximal entry in a vector </li>
+</ul>
+
+<p>The first letter (x) can be any of the letters S,D,C,Z
+depending on the precision. A quick reference to BLAS 1 can be
+found at <a href="http://www.netlib.org/blas/blasqr.ps">http://www.netlib.org/blas/blasqr.ps</a>
+</p>
+
+<h3>BLAS 2</h3>
+
+<p>Some of the BLAS 2 subprograms are: </p>
+
+<ul>
+    <li>xGEMV - general matrix-vector multiplication </li>
+    <li>xGER - general rank-1 update </li>
+    <li>xSYR2 - symmetric rank-2 update </li>
+    <li>xTRSV - solve a triangular system of equations </li>
+</ul>
+
+<p>A detailed description of BLAS 2 can be found at <a
+href="http://www.netlib.org/blas/blas2-paper.ps">http://www.netlib.org/blas/blas2-paper.ps</a>.
+</p>
+
+<h3>BLAS 3</h3>
+
+<p>Some of the BLAS 3 subprograms are: </p>
+
+<ul>
+    <li>xGEMM - general matrix-matrix multiplication </li>
+    <li>xSYMM - symmetric matrix-matrix multiplication </li>
+    <li>xSYRK - symmetric rank-k update </li>
+    <li>xSYR2K - symmetric rank-2k update </li>
+</ul>
+
+<p>The more advanced matrix operations, like solving a linear
+system of equations, are contained in LAPACK. A detailed
+description of BLAS 3 can be found at <a
+href="http://www.netlib.org/blas/blas3-paper.ps">http://www.netlib.org/blas/blas3-paper.ps</a>.
+</p>
+
+<h3>Examples </h3>
+
+<p>Let us first look at a very simple BLAS routine, SSCAL. The
+call sequence is </p>
+
+<pre>
+      call SSCAL ( n, a, x, incx )
+</pre>
+
+<p>Here <em>x</em> is the vector, <em>n</em> is the length
+(number of elements in <em>x</em> we wish to use), and <em>a</em>
+is the scalar by which we want to multiply <em>x</em>. The last
+argument <em>incx</em> is the <em>increment</em>. Usually, <em>incx=1</em>
+and the vector <em>x</em> corresponds directly to the
+one-dimensional Fortran array <em>x</em>. For <em>incx&gt;1</em>
+it specifies how many elements in the array we should
+&quot;jump&quot; between each element of the vector <em>x</em>.
+For example, if <em>incx=2</em> it means we should only scale
+every other element (note: the physical dimension of the array <em>x</em>
+should then be at least <em>2n-1</em>). Consider these examples
+where <em>x</em> has been declared as <tt>real x(100)</tt>. </p>
+
+<pre>
+      call SSCAL(100, a, x, 1)
+      call SSCAL( 50, a, x(50), 1)
+      call SSCAL( 50, a, x(2), 2)
+</pre>
+
+<p>The first line will scale all 100 elements of <em>x</em> by <em>a</em>.
+The next line will only scale the last 50 elements of <em>x</em>
+by <em>a</em>. The last line will scale all the even indices of <em>x</em>
+by <em>a</em>. </p>
+
+<p>Observe that the array <em>x</em> will be overwritten by the
+new values. If you need to preserve a copy of the old <em>x</em>,
+you have to make a copy first, e.g., by using SCOPY. </p>
+
+<p>Now consider a more complicated example. Suppose you have two
+2-dimensional arrays A and B, and you are asked to find the <em>(i,j)</em>
+entry of the product A*B. This is easily done by computing the
+inner product of row <em>i</em> from A and column <em>j</em> of
+B. We can use the BLAS 1 subroutine SDOT. The only difficulty is
+to figure out the correct indices and increments. The call
+sequence for SDOT is </p>
+
+<pre>
+      SDOT ( n, x, incx, y, incy )
+</pre>
+
+<p>Suppose the array declarations were </p>
+
+<pre>
+      real A(lda,lda)
+      real B(ldb,ldb)
+</pre>
+
+<p>but in the program you know that the actual size of A is <em>m*p</em>
+and for B it is <em>p*n</em>. The <em>i</em>'th row of A starts
+at the element <em>A(i,1)</em>. But since Fortran stores
+2-dimensional arrays down columns, the next row element <em>A(i,2)</em>
+will be stored <em>lda</em> elements later in memory (since <em>lda</em>
+is the length of a column). Hence we set <em>incx = lda</em>. For
+the column in B there is no such problem, the elements are stored
+consecutively so <em>incy = 1</em>. The length of the inner
+product calculation is <em>p</em>. Hence the answer is </p>
+
+<pre>
+      SDOT ( p, A(i,1), lda, B(1,j), 1 )
+</pre>
+
+<h3>How to get the BLAS </h3>
+
+<p>First of all you should check if you already have BLAS on your
+system. If not, you can find it on Netlib at <a
+href="http://www.netlib.org/blas/">http://www.netlib.org/blas</a>.
+</p>
+
+<h3>Documentation </h3>
+
+<p>The BLAS routines are almost self-explanatory. Once you know
+which routine you need, fetch it and read the header section that
+explains the input and output parameters in detail. We will look
+at an example in the next section when we address the LAPACK
+routines. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

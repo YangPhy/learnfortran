@@ -1,0 +1,134 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>3. Fortran 77 Basics</h2>
+
+<p>A Fortran program is just a sequence of lines of text. The
+text has to follow a certain <em>structure</em> to be a valid
+Fortran program. We start by looking at a simple example: </p>
+
+<pre>
+      program circle
+      real r, area
+ 
+c This program reads a real number r and prints
+c the area of a circle with radius r.
+ 
+      write (*,*) 'Give radius r:'
+      read  (*,*) r
+      area = 3.14159*r*r
+      write (*,*) 'Area = ', area
+ 
+      stop
+      end
+</pre>
+
+<p>The lines that begin with with a &quot;c&quot; are <em>comments</em>
+and have no purpose other than to make the program more readable
+for humans. Originally, all Fortran programs had to be written in
+all upper-case letters. Most people now write lower-case since
+this is more legible, and so will we. You may wish to mix case,
+but Fortran is not case-sensitive, so &quot;X&quot; and
+&quot;x&quot; are the same variable. </p>
+
+<h3>Program organization</h3>
+
+<p>A Fortran program generally consists of a main program (or
+driver) and possibly several subprograms (procedures or
+subroutines). For now we will place all the statements in the
+main program; subprograms will be treated later. The structure of
+a main program is: </p>
+
+<pre>
+      program <em>name</em>
+
+      <em>declarations</em>
+
+      <em>statements</em>
+
+      stop
+      end
+</pre>
+
+<p>In this tutorial, words that are in <em>italics</em> should
+not be taken as literal text, but rather as a description of what
+belongs in their place. </p>
+
+<p>The <tt>stop</tt> statement is optional and may seem
+superfluous since the program will stop when it reaches the end
+anyway, but it is recommended to always terminate a program with
+the <tt>stop</tt> statement to emphasize that the execution flow
+stops there. </p>
+
+<p>You should note that you cannot have a variable with the same
+name as the program. </p>
+
+<h3>Column position rules</h3>
+
+<p>Fortran 77 is <em>not</em> a free-format language, but has a
+very strict set of rules for how the source code should be
+formatted. The most important rules are the column position
+rules: </p>
+
+<pre>
+Col. 1    : Blank, or a &quot;c&quot; or &quot;*&quot; for comments
+Col. 1-5  : Statement label (optional)
+Col. 6    : Continuation of previous line (optional)
+Col. 7-72 : Statements
+Col. 73-80: Sequence number (optional, rarely used today)
+</pre>
+
+<p>Most lines in a Fortran 77 program starts with 6 blanks and
+ends before column 72, i.e. only the statement field is used. </p>
+
+<h3>Comments</h3>
+
+<p>A line that begins with the letter &quot;c&quot; or an
+asterisk in the first column is a comment. Comments may appear
+anywhere in the program. Well-written comments are crucial to
+program readability. Commercial Fortran codes often contain about
+50% comments. You may also encounter Fortran programs that use
+the exclamation mark (!) for comments. This is not a standard
+part of Fortran 77, but is supported by several Fortran 77
+compilers and is explicitly allowed in Fortran 90. When
+understood, the exclamation mark may appear anywhere on a line
+(except in positions 2-6). </p>
+
+<h3>Continuation</h3>
+
+<p>Sometimes, a statement does not fit into the 66 available
+columns of a single line. One can then break the statement into
+two or more lines, and use the continuation mark in position 6.
+Example: </p>
+
+<pre>
+c23456789 <em>(This demonstrates column position!)</em>
+
+c The next statement goes over two physical lines
+      area = 3.14159265358979
+     +       * r * r
+</pre>
+
+<p>Any character can be used instead of the plus sign as a
+continuation character. It is considered good programming style
+to use either the plus sign, an ampersand, or digits (using 2 for
+the second line, 3 for the third, and so on). </p>
+
+<h3>Blank spaces</h3>
+
+<p>Blank spaces are ignored in Fortran 77. So if you remove all
+blanks in a Fortran 77 program, the program is still acceptable
+to a complier but almost unreadable to humans. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>9. Loops</h2>
+
+<p>For repeated execution of similar things, <em>loops</em> are
+used. If you are familiar with other programming languages you
+have probably heard about <em>for</em>-loops, <em>while</em>-loops,
+and <em>until</em>-loops. Fortran 77 has only one loop construct,
+called the <tt>do</tt>-loop. The <tt>do</tt>-loop corresponds to
+what is known as a <em>for</em>-loop in other languages. Other
+loop constructs have to be built using the <tt>if</tt> and <tt>goto</tt>
+statements. </p>
+
+<h3>do-loops</h3>
+
+<p>The <tt>do</tt>-loop is used for simple counting. Here is a
+simple example that prints the cumulative sums of the integers
+from 1 through n (assume n has been assigned a value elsewhere): </p>
+
+<pre>
+      integer i, n, sum
+ 
+      sum = 0
+      do 10 i = 1, n
+         sum = sum + i
+         write(*,*) 'i =', i
+         write(*,*) 'sum =', sum
+  10  continue
+</pre>
+
+<p>The number 10 is a statement <em>label</em>. Typically, there
+will be many loops and other statements in a single program that
+require a statement label. The programmer is responsible for
+assigning a unique number to each label in each program (or
+subprogram). Recall that column positions 1-5 are reserved for
+statement labels. The numerical value of statement labels have no
+significance, so any integers can be used, in any order.
+Typically, most programmers use consecutive multiples of 10. </p>
+
+<p>The variable defined in the <tt>do</tt>-statement is
+incremented by 1 by default. However, you can define the <em>step</em>
+to be any number but zero. This program segment prints the even
+numbers between 1 and 10 in decreasing order: </p>
+
+<pre>
+      integer i
+ 
+      do 20 i = 10, 1, -2
+         write(*,*) 'i =', i
+  20  continue
+</pre>
+
+<p>The general form of the <tt>do</tt> loop is as follows: </p>
+
+<pre>
+      do <em>label  var =  expr1, expr2, expr3</em>
+         <em>statements</em>
+<em>label</em> continue
+</pre>
+
+<p><em>var</em> is the loop variable (often called the <em>loop
+index</em>) which must be integer. <em>expr1</em> specifies the
+initial value of <em>var</em>, <em>expr2</em> is the terminating
+bound, and <em>expr3</em> is the increment (step). </p>
+
+<p>Note: The <tt>do</tt>-loop variable must never be changed by
+other statements within the loop! This will cause great
+confusion. </p>
+
+<p>The loop index can be of type real, but due to round off
+errors may not take on exactly the expected sequence of values. </p>
+
+<p>Many Fortran 77 compilers allow <tt>do</tt>-loops to be closed
+by the <tt>enddo</tt> statement. The advantage of this is that
+the statement label can then be omitted since it is assumed that
+an <tt>enddo</tt> closes the nearest previous <tt>do</tt>
+statement. The <tt>enddo</tt> construct is widely used, but it is
+not a part of ANSI Fortran 77. </p>
+
+<p>It should be noted that unlike some programming languages,
+Fortran only evaluates the start, end, and step expressions once,
+before the first pass thought the body of the loop. This means
+that the following do-loop will multiply a non-negative j by two
+(the hard way), rather than running forever as the equivalent
+loop might in another language. </p>
+
+<pre>
+      integer i,j
+ 
+      read (*,*) j
+      do 20 i = 1, j
+         j = j + 1
+  20  continue
+      write (*,*) j
+</pre>
+
+<h3>while-loops</h3>
+
+<p>The most intuitive way to write a <tt>while</tt>-loop is </p>
+
+<pre>
+      while <em>(logical expr)</em> do
+         <em>statements</em>
+      enddo
+</pre>
+
+<p>or alternatively, </p>
+
+<pre>
+      do while <em>(logical expr)</em> 
+         <em>statements</em>
+      enddo
+</pre>
+
+<p>The program will alternate testing the condition and executing
+the statements in the body as long as the condition in the <tt>while</tt>
+statement is true. Even though this syntax is accepted by many
+compilers, it is not ANSI Fortran 77. The correct way is to use <tt>if</tt>
+and <tt>goto</tt>: </p>
+
+<pre>
+<em>label</em> if <em>(logical expr)</em> then
+         <em>statements</em>
+         goto <em>label</em>
+      endif 
+</pre>
+
+<p>Here is an example that calculates and prints all the powers
+of two that are less than or equal to 100: </p>
+
+<pre>
+     integer n
+
+     n = 1
+  10 if (n .le. 100) then
+        write (*,*) n
+        n = 2*n
+        goto 10
+     endif
+</pre>
+
+<h3>until-loops</h3>
+
+<p>If the termination criterion is at the end instead of the
+beginning, it is often called an until-loop. The pseudocode looks
+like this: </p>
+
+<pre>
+      do
+         <em>statements</em>
+      until <em>(logical expr)</em>
+</pre>
+
+<p>Again, this should be implemented in Fortran 77 by using <tt>if</tt>
+and <tt>goto</tt>: </p>
+
+<pre>
+<em>label</em> continue
+         <em>statements</em>
+      if <em>(logical expr)</em> goto <em>label</em>
+</pre>
+
+<p>Note that the logical expression in the latter version should
+be the negation of the expression given in the pseudocode! </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

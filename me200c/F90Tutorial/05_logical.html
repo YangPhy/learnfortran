@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>5. Logical expressions </h2>
+
+<ul>
+    <li>Symbolic forms of the relational operators are allowed: <pre>
+            Old Operator	Symbol
+            ------------	------
+               .LT.		  <.GT.>
+	       .EQ.		  ==
+	       .LE.	          <= .GE.>=
+	       .NE.		  /=
+</pre>
+    </li>
+    <li>IF-ELSE constructs may be named by attaching a label at
+        the beginning of the block: <pre>
+	<em>name</em>:	IF (<em>logical argument</em>) THEN
+                      <em>statements</em>
+		ELSE IF (<em>logical argument</em>) THEN <em>name</em>	
+                      <em>statements</em>
+                   .
+                   .
+                   .
+
+		END IF <em>name</em>
+</pre>
+    </li>
+    <li>The CASE construct may be used to execute a set of
+        multi-alternative selection criteria: <pre>
+   SELECT CASE (<em>selector</em>)
+      CASE (<em>list #1</em>)
+         <em>statements</em>
+      CASE (<em>list #2</em>)
+         <em>statements</em>
+      .
+      .
+      .
+
+      CASE DEFAULT
+         <em>statements</em>
+   END SELECT
+</pre>
+        <p>The <em>selector</em> may be an integer, character, or
+        logical expression. Just like IF_ELSE blocks, CASE
+        constructs may also be named. The <em>list #i</em> is a
+        list of one or more possible values of the selector
+        index. The DEFAULT option in a CASE construct may be
+        omitted, but it is recognized as good programming style
+        to always include it. </p>
+        <p>Consider the following example of the use of the CASE
+        construct: </p>
+        <pre>
+   SELECT CASE (Freq_Fly_Points)
+      CASE (:19999)
+         WRITE(*,*) 'Keep flying - no free ticket yet!'
+      CASE(20000:49999)
+         WRITE(*,*) 'Woo-Hoo!!  Free ticket in continental U.S.!'
+      CASE(50000:)
+         WRITE(*,*) 'Hawaii here I come!!'
+      CASE DEFAULT
+         WRITE(*,*) 'Sorry - you aren't going anywhere  :( '
+   END SELECT
+</pre>
+        <p>Here we use the CASE construct to evaluate what sort
+        of reward we might be entitled to on our favorite airline
+        based on the number of accrued frequent flyer points. If
+        we have less than 20,000 points, we don't get any
+        reward... yet. If we have between 20,000 and 49,000
+        points, we can get a free ticket in the continental U.S..
+        If we have more than 50,000 points, we are on our way to
+        Hawaii!! In this case, the DEFAULT option should never
+        execute, but it is there just in case! </p>
+    </li>
+</ul>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

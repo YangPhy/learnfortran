@@ -1,0 +1,56 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>7. Logical expressions</h2>
+
+<p>Logical expressions can only have the value <tt>.TRUE.</tt> or
+<tt>.FALSE.</tt>. A logical expression can be formed by comparing
+arithmetic expressions using the following <em>relational
+operators</em>: </p>
+
+<pre>
+      .LT.  meaning <.LE. <=".GT.">
+      .GE.          &gt;=
+      .EQ.          =
+      .NE.          /=
+</pre>
+
+<p>So you <em>cannot</em> use symbols like <or ="for" comparison in Fortran 77, but you have to use the correct two-letter abbreviation enclosed by dots! <P> Logical expressions
+can be combined by the <em>logical operators</em> <tt>.AND. .OR.
+.NOT.</tt> which have the obvious meaning. </p>
+
+<h3>Logical variables and assignment</h3>
+
+<p>Truth values can be stored in <em>logical variables</em>. The
+assignment is analogous to the arithmetic assignment. Example: </p>
+
+<pre>
+      logical a, b
+      a = .TRUE.
+      b = a .AND. 3 .LT. 5/2
+</pre>
+
+<p>The order of precedence is important, as the last example
+shows. The rule is that arithmetic expressions are evaluated
+first, then relational operators, and finally logical operators.
+Hence b will be assigned <tt>.FALSE.</tt> in the example above.
+Among the logical operators the precedence (in the absence of
+parenthesis) is that <tt>.NOT.</tt> is done first, then <tt>.AND.</tt>,
+then <tt>.OR.</tt> is done last. </p>
+
+<p>Logical variables are seldom used in Fortran. But logical
+expressions are frequently used in conditional statements like
+the <tt>if</tt> statement. </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

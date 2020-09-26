@@ -1,0 +1,211 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>6. Expressions and assignment</h2>
+
+<h3>Constants</h3>
+
+<p>The simplest form of an expression is a <em>constant</em>.
+There are 6 types of constants, corresponding to the 6 data
+types. Here are some integer constants: </p>
+
+<pre>
+      1
+      0
+      -100
+      32767
+      +15
+</pre>
+
+<p>Then we have real constants: </p>
+
+<pre>
+      1.0
+      -0.25
+      2.0E6
+      3.333E-1
+</pre>
+
+<p>The E-notation means that you should multiply the constant by
+10 raised to the power following the &quot;E&quot;. Hence, 2.0E6
+is two million, while 3.333E-1 is approximately one third. </p>
+
+<p>For constants that are larger than the largest real allowed,
+or that requires high precision, double precision should be used.
+The notation is the same as for real constants except the
+&quot;E&quot; is replaced by a &quot;D&quot;. Examples: </p>
+
+<pre>
+      2.0D-1
+      1D99
+</pre>
+
+<p>Here 2.0D-1 is a double precision one-fifth, while 1D99 is a
+one followed by 99 zeros. </p>
+
+<p>The next type is complex constants. This is designated by a
+pair of constants (integer or real), separated by a comma and
+enclosed in parentheses. Examples are: </p>
+
+<pre>
+      (2, -3)
+      (1., 9.9E-1)
+</pre>
+
+<p>The first number denotes the real part and the second the
+imaginary part. </p>
+
+<p>The fifth type is logical constants. These can only have one
+of two values: </p>
+
+<pre>
+      .TRUE.
+      .FALSE.
+</pre>
+
+<p>Note that the dots enclosing the letters are required. </p>
+
+<p>The last type is character constants. These are most often
+used as an <em>array</em> of characters, called a <em>string</em>.
+These consist of an arbitrary sequence of characters enclosed in
+apostrophes (single quotes): </p>
+
+<pre>
+      'ABC'
+      'Anything goes!'
+      'It is a nice day'
+</pre>
+
+<p>Strings and character constants are case sensitive. A problem
+arises if you want to have an apostrophe in the string itself. In
+this case, you should double the apostrophe: </p>
+
+<pre>
+      'It''s a nice day'
+</pre>
+
+<h3>Expressions</h3>
+
+<p>The simplest non-constant expressions are of the form </p>
+
+<pre>
+      <em>operand operator operand</em>
+</pre>
+
+<p>and an example is </p>
+
+<pre>
+      x + y
+</pre>
+
+<p>The result of an expression is itself an operand, hence we can
+nest expressions together like </p>
+
+<pre>
+      x + 2 * y 
+</pre>
+
+<p>This raises the question of precedence: Does the last
+expression mean <tt>x + (2*y)</tt> or <tt>(x+2)*y</tt>? The
+precedence of arithmetic operators in Fortran 77 are (from
+highest to lowest): </p>
+
+<pre>
+      **   <em>{exponentiation}</em>
+      *,/  <em>{multiplication, division}</em>
+      +,-  <em>{addition, subtraction}</em>
+</pre>
+
+<p>All these operators are calculated left-to-right, except the
+exponentiation operator **, which has right-to-left precedence.
+If you want to change the default evaluation order, you can use
+parentheses. </p>
+
+<p>The above operators are all binary operators. there is also
+the unary operator <tt>-</tt> for negation, which takes
+precedence over the others. Hence an expression like <tt>-x+y</tt>
+means what you would expect. </p>
+
+<p>Extreme caution must be taken when using the division
+operator, which has a quite different meaning for integers and
+reals. If the operands are both integers, an integer division is
+performed, otherwise a real arithmetic division is performed. For
+example, 3/2 equals 1, while 3./2. equals 1.5 (note the decimal
+points). </p>
+
+<h3>Assignment</h3>
+
+<p>The assignment has the form </p>
+
+<pre>
+      <em>variable_name</em> = <em>expression</em>
+</pre>
+
+<p>The interpretation is as follows: Evaluate the right hand side
+and assign the resulting value to the variable on the left. The
+expression on the right may contain other variables, but these
+never change value! For example, </p>
+
+<pre>
+      area = pi * r**2
+</pre>
+
+<p>does not change the value of <tt>pi</tt> or <tt>r</tt>, only <tt>area</tt>.
+</p>
+
+<h3>Type conversion</h3>
+
+<p>When different data types occur in the same expression, <em>type
+conversion</em> has to take place, either explicitly or
+implicitly. Fortran will do some type conversion implicitly. For
+example, </p>
+
+<pre>
+      real x
+      x = x + 1
+</pre>
+
+<p>will convert the integer one to the real number one, and has
+the desired effect of incrementing x by one. However, in more
+complicated expressions, it is good programming practice to force
+the necessary type conversions explicitly. For numbers, the
+following functions are available: </p>
+
+<pre>
+      int
+      real
+      dble
+      ichar
+      char
+</pre>
+
+<p>The first three have the obvious meaning. <tt>ichar</tt> takes
+a character and converts it to an integer, while <tt>char</tt>
+does exactly the opposite. </p>
+
+<p>Example: How to multiply two real variables <tt>x</tt> and <tt>y</tt>
+using double precision and store the result in the double
+precision variable <tt>w</tt>: </p>
+
+<pre>
+      w = dble(x)*dble(y)
+</pre>
+
+<p>Note that this is different from </p>
+
+<pre>
+      w = dble(x*y)
+</pre>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

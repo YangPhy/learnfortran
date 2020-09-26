@@ -1,0 +1,251 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>11. Subprograms</h2>
+
+<p>When a program is more than a few hundred lines long, it gets
+hard to follow. Fortran codes that solve real engineering
+problems often have tens of thousands of lines. The only way to
+handle such big codes, is to use a <em>modular</em> approach and
+split the program into many separate smaller units called <em>subprograms</em>.
+</p>
+
+<p>A subprogram is a (small) piece of code that solves a well
+defined subproblem. In a large program, one often has to solve
+the same subproblems with many different data. Instead of
+replicating code, these tasks should be solved by subprograms .
+The same subprogram can be invoked many times with different
+input data. </p>
+
+<p>Fortran has two different types of subprograms, called <em>functions</em>
+and <em>subroutines</em>. </p>
+
+<h3>Functions</h3>
+
+<p>Fortran functions are quite similar to mathematical functions:
+They both take a set of input arguments (parameters) and return a
+value of some type. In the preceding discussion we talked about <em>user
+defined</em> subprograms. Fortran 77 also has some <em>intrinsic</em>
+(built-in) functions. </p>
+
+<p>A simple example illustrates how to use a function: </p>
+
+<pre>
+      x = cos(pi/3.0)
+</pre>
+
+<p>Here <tt>cos</tt> is the cosine function, so <tt>x</tt> will
+be assigned the value 0.5 (if <tt>pi</tt> has been correctly
+defined; Fortran 77 has no built-in constants). There are many
+intrinsic functions in Fortran 77. Some of the most common are: </p>
+
+<pre>
+      abs     <em>absolute value</em>
+      min     <em>minimum value</em>
+      max     <em>maximum value</em>
+      sqrt    <em>square root</em>
+      sin     <em>sine</em>
+      cos     <em>cosine</em>
+      tan     <em>tangent</em>
+      atan    <em>arctangent</em>
+      exp     <em>exponential (natural)</em>
+      log     <em>logarithm (natural)</em>
+</pre>
+
+<p>In general, a function always has a <em>type</em>. Most of the
+built-in functions mentioned above, however, are <em>generic</em>.
+So in the example above, <tt>pi</tt> and <tt>x</tt> could be
+either of type <tt>real</tt> or <tt>double precision</tt>. The
+compiler would check the types and use the correct version of <tt>cos</tt>
+(real or double precision). Unfortunately, Fortran is not really
+a <em>polymorphic</em> language so in general you have to be
+careful to match the types of your variables and your functions! </p>
+
+<p>Now we turn to the user-written functions. Consider the
+following problem: A meteorologist has studied the precipitation
+levels in the Bay Area and has come up with a model <em>r(m,t)</em>
+where <em>r</em> is the amount of rain, <em>m</em> is the month,
+and <em>t</em> is a scalar parameter that depends on the
+location. Given the formula for <em>r</em> and the value of <em>t</em>,
+compute the annual rainfall. </p>
+
+<p>The obvious way to solve the problem is to write a loop that
+runs over all the months and sums up the values of <em>r</em>.
+Since computing the value of <em>r</em> is an independent
+subproblem, it is convenient to implement it as a function. The
+following main program can be used: </p>
+
+<pre>
+      program rain
+      real r, t, sum
+      integer m
+ 
+      read (*,*) t
+      sum = 0.0
+      do 10 m = 1, 12
+         sum = sum + r(m, t)
+  10  continue
+      write (*,*) 'Annual rainfall is ', sum, 'inches'
+
+      stop
+      end
+</pre>
+
+<p>Note that we have declared 'r' to be 'real' just as we would a
+variable. In addition, the function <em>r</em> has to be defined
+as a Fortran function. The formula the meteorologist came up with
+was </p>
+
+<pre>
+      r(m,t) = t/10 * (m**2 + 14*m + 46) <em>if this is positive</em>
+      r(m,t) = 0                         <em>otherwise        </em>
+</pre>
+
+<p>The corresponding Fortran function is </p>
+
+<pre>
+      real function r(m,t)
+      integer m
+      real t
+
+      r = 0.1*t * (m**2 + 14*m + 46)
+      if (r .LT. 0) r = 0.0
+
+      return
+      end
+</pre>
+
+<p>We see that the structure of a function closely resembles that
+of the main program. The main differences are: </p>
+
+<ul>
+    <li>Functions have a type. This type must also be declared in
+        the calling program. </li>
+    <li>The return value should be stored in a variable with the
+        same name as the function. </li>
+    <li>Functions are terminated by the <em>return</em> statement
+        instead of <em>stop</em>. </li>
+</ul>
+
+<p>To sum up, the general syntax of a Fortran 77 function is: </p>
+
+<pre>
+      <em>type</em> function <em>name (list-of-variables)</em>
+      <em>declarations</em>
+      <em>statements</em>
+      return
+      end
+</pre>
+
+<p>The function has to be declared with the correct type in the
+calling program unit. If you use a function which has not been
+declared, Fortran will try to use the same implicit typing used
+for variables, probably getting it wrong. The function is called
+by simply using the function name and listing the parameters in
+parenthesis. </p>
+
+<p>It should be noted that strictly speaking Fortran 77 doesn't
+permit recursion (functions which call themselves). However, it
+is not uncommon for a compiler to allow recursion. </p>
+
+<h3>Subroutines</h3>
+
+<p>A Fortran function can essentially only return one value.
+Often we want to return two or more values (or sometimes none!).
+For this purpose we use the <tt>subroutine</tt> construct. The
+syntax is as follows: </p>
+
+<pre>
+      subroutine <em>name (list-of-arguments)</em>
+      <em>declarations</em>
+      <em>statements</em>
+      return
+      end
+</pre>
+
+<p>Note that subroutines have no type and consequently should not
+(cannot) be declared in the calling program unit. They are also
+invoked differently than functions, using the word <em>call</em>
+before their names and parameters. </p>
+
+<p>We give an example of a very simple subroutine. The purpose of
+the subroutine is to swap two integers. </p>
+
+<pre>
+      subroutine iswap (a, b)
+      integer a, b
+c Local variables
+      integer tmp
+
+      tmp = a
+      a = b
+      b = tmp
+
+      return
+      end
+</pre>
+
+<p>Note that there are two blocks of variable declarations here.
+First, we declare the input/output parameters, i.e. the variables
+that are common to both the caller and the callee. Afterwards, we
+declare the <em>local variables</em>, i.e. the variables that can
+only be used within this subprogram. We can use the same variable
+names in different subprograms and the compiler will know that
+they are different variables that just happen to have the same
+names. </p>
+
+<h3>Call-by-reference</h3>
+
+<p>Fortran 77 uses the so-called <em>call-by-reference</em>
+paradigm. This means that instead of just passing the values of
+the function/subroutine arguments (<em>call-by-value</em>), the
+memory address of the arguments (pointers) are passed instead. A
+small example should show the difference: </p>
+
+<pre>
+      program callex
+      integer m, n
+c
+      m = 1
+      n = 2 
+
+      call iswap(m, n)
+      write(*,*) m, n
+
+      stop
+      end
+</pre>
+
+<p>The output from this program is &quot;2 1&quot;, just as one
+would expect. However, if Fortran 77 had been using call-by-value
+then the output would have been &quot;1 2&quot;, i.e. the
+variables m and n were unchanged! The reason for this is that
+only the values of m and n had been copied to the subroutine
+iswap, and even if a and b were swapped inside the subroutine the
+new values would not have been passed back to the main program. </p>
+
+<p>In the above example, call-by-reference was exactly what we
+wanted. But you have to be careful about this when writing
+Fortran code, because it is easy to introduce undesired <em>side
+effects</em>. For example, sometimes it is tempting to use an
+input parameter in a subprogram as a local variable and change
+its value. Since the new value will then propagate back to the
+calling program with an unexpected value, you should <em>never</em>
+do this unless (like our iswap subroutine) the change is part of
+the purpose of the subroutine. </p>
+
+<p>We will come back to this issue in a later section on passing
+arrays as arguments (parameters). </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

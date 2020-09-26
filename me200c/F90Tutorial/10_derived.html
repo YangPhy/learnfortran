@@ -1,0 +1,68 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 90 Tutorial</title>
+</head>
+
+<body>
+
+<h2>10. Derived data types </h2>
+
+<p>A useful feature in Fortran 90 is the ability to define
+derived data types. This feature is similar to the structure
+feature of the C programming language. The manner in which one
+defines and uses a derived data type is best illustrated through
+example: </p>
+
+<pre>
+   TYPE Point
+      REAL :: X, Y
+   END TYPE Point
+
+   TYPE Circle
+      TYPE (Point) :: Center
+      REAL :: Radius
+   END TYPE Circle
+
+   TYPE (Circle) :: C
+</pre>
+
+<p>This declares the variable C to be of type Circle. C formally
+has two components. The first component, Circle, is itself a
+derived data type consisting of two real components called X and
+Y. The second component of C is a variable named Radius of type
+real. </p>
+
+<p>The variable C may be assigned a value in either of these
+ways: </p>
+
+<pre>
+C = Circle(Point(0., 0.), 1.)
+</pre>
+
+<p>or, equivalently </p>
+
+<pre>
+C%Center%X = 0.
+C%Center%Y = 0.
+C%Radius = 1.
+</pre>
+
+<p>In both cases, the &quot;circle&quot; C was assigned the
+center point (0., 0.) and given the radius 1. (the unit circle). </p>
+
+<p>There are many practical uses for derived data types. And,
+these data types function just like any other variable in a
+program unit, namely, they may be initialized, modified, and even
+passed to subprograms as parameters. </p>
+
+<p><em>Copyright © 1996-7 by Stanford University. All rights
+reserved.</em> </p>
+
+<ul>
+</ul>
+</body>
+</html>

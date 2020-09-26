@@ -1,0 +1,112 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>14. Data and Block Data Statements </h2>
+
+<h3>The data statement</h3>
+
+<p>The data statement is another way to input data that are known
+at the time when the program is written. It is similar to the
+assignment statement. The syntax is: </p>
+
+<pre>
+      data <em>list-of-variables</em>/ <em>list-of-values</em>/, ...
+</pre>
+
+<p>where the three dots means that this pattern can be repeated.
+Here is an example: </p>
+
+<pre>
+      data m/10/, n/20/, x/2.5/, y/2.5/
+</pre>
+
+<p>We could also have written this </p>
+
+<pre>
+      data m,n/10,20/, x,y/2*2.5/
+</pre>
+
+<p>We could have accomplished the same thing by the assignments </p>
+
+<pre>
+      m = 10
+      n = 20
+      x = 2.5
+      y = 2.5
+</pre>
+
+<p>The data statement is more compact and therefore often more
+convenient. Notice especially the shorthand notation for
+assigning identical values repeatedly. </p>
+
+<p>The data statement is performed only once, right before the
+execution of the program starts. For this reason, the data
+statement is mainly used in the main program and not in
+subroutines. </p>
+
+<p>The data statement can also be used to initialize arrays
+(vectors, matrices). This example shows how to make sure a matrix
+is all zeros when the program starts: </p>
+
+<pre>
+      real A(10,20)
+      data A/ 200 * 0.0/
+</pre>
+
+<p>Some compilers will automatically initialize arrays like this
+but not all, so if you rely on array elements to be zero it is a
+good idea to follow this example. Of course you can initialize
+arrays to other values than zero. You may even initialize
+individual elements: </p>
+
+<pre>
+      data A(1,1)/ 12.5/, A(2,1)/ -33.3/, A(2,2)/ 1.0/
+</pre>
+
+<p>Or you can list all the elements for small arrays like this: </p>
+
+<pre>
+      integer v(5)
+      real B(2,2)
+      data v/10,20,30,40,50/, B/1.0,-3.7,4.3,0.0/
+</pre>
+
+<p>The values for two-dimensional arrays will be assigned in
+column-first order as usual. </p>
+
+<h3>The block data statement</h3>
+
+<p>The data statement cannot be used for variables contained in a
+common block. There is a special &quot;subroutine&quot; for this
+purpose, called <tt>block data</tt>. It is not really a
+subroutine, but it looks a bit similar because it is given as a
+separate program unit. Here is an example: </p>
+
+<pre>
+      block data
+      integer nmax
+      parameter (nmax=20)
+      real v(nmax), alpha, beta
+      common /vector/v,alpha,beta
+      data v/20*100.0/, alpha/3.14/, beta/2.71/
+      end
+</pre>
+
+<p>Just as the data statement, block data is executed once before
+the execution of the main program starts. The position of the
+block data &quot;subroutine&quot; in the source code is
+irrelevant (as long as it is not nested inside the main program
+or a subprogram). </p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Fortran 77 Tutorial</title>
+</head>
+
+<body>
+
+<h2>18.3 Using libraries under Unix</h2>
+
+<p>A Fortran package of subprograms may contain hundreds of
+files. It is very slow and inconvenient to recompile these files
+every time you want to use any of the subroutines. Under the Unix
+operating system you can avoid this by making a <em>library file</em>.
+The library file is an object file, so you only have to compile
+your additional main (driver) program and then link it with
+library. (Linking is much faster than compiling.) </p>
+
+<p>Libraries have file names starting with <tt>lib</tt> and
+ending in <tt>.a</tt>. Some libraries have already been installed
+by your system administrator, usually in the directories <tt>/usr/lib</tt>
+and <tt>/usr/local/lib</tt>. For example, the BLAS library MAY be
+stored in the file <tt>/usr/local/lib/libblas.a</tt>. You use the
+<tt>-l</tt> option to link it together with your main program,
+e.g. </p>
+
+<pre>
+      f77 main.f -lblas
+</pre>
+
+<p>You can link several files with several libraries at the same
+time if you wish: </p>
+
+<pre>
+      f77 main.f mysub.f -llapack -lblas 
+</pre>
+
+<p>The order you list the libraries is significant. In the
+example above -llapack should be listed before -lblas since
+LAPACK calls BLAS routines. </p>
+
+<p>If you want to create your own library, you can do so by
+compiling the source code to object code and then collecting all
+the object files into one library file. This example generates a
+library called <tt>my_lib</tt>: </p>
+
+<pre>
+       f77 -c *.f
+       ar rcv libmy_lib.a *.o
+       ranlib libmy_lib.a 
+       rm *.o
+</pre>
+
+<p>Check the manual pages or a Unix book for more information on
+the commands <tt>ar</tt> and <tt>ranlib</tt>. If you have the
+library file in the current directory, you can link with it as
+follows: </p>
+
+<pre>
+       f77 main.f -L. -lmy_lib
+</pre>
+
+<p>One advantage of libraries is that you only compile them once
+but you can use them many times. </p>
+
+<p>Some of the BLAS and LAPACK subroutines have been downloaded
+to the class account. The files are located in <a href="src/">/usr/class/me390/src/</a>.
+The routines have been compiled and collected into a library file
+called <em>libmy_lib.a</em> stored in <a href="lib/libmy_lib.a">/usr/class/me390/lib/libmy_lib.a</a>.
+</p>
+
+<p><em>Copyright © 1995-7 by Stanford University. All rights
+reserved.</em> </p>
+</body>
+</html>
